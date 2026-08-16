@@ -15,7 +15,7 @@ import {
   getCategoryPath,
   allCategorySlugs,
 } from "@/lib/categories";
-import { categoryLabels, productImageAlt } from "@/lib/products";
+import { categoryLabels, productImageAlt, storefrontImages } from "@/lib/products";
 import {
   filterProducts,
   getColorSiblings,
@@ -26,10 +26,27 @@ import {
   buildPageMetadata,
   productJsonLd,
 } from "@/lib/seo";
+import {
+  CARE_PLACEHOLDER,
+  DESCRIPTION_PLACEHOLDER,
+  displaySpec,
+  isPlaceholderSpec,
+  SPEC_PLACEHOLDER,
+} from "@/lib/catalog-defaults";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+function SpecRow({ label, value }: { label: string; value?: string }) {
+  const text = displaySpec(value);
+  return (
+    <div className="grid grid-cols-[140px_1fr] gap-3">
+      <dt className="text-ink-muted">{label}</dt>
+      <dd className={isPlaceholderSpec(value) ? "text-ink-muted" : undefined}>{text}</dd>
+    </div>
+  );
+}
 
 export async function generateStaticParams() {
   return [
@@ -56,12 +73,13 @@ export async function generateMetadata({
 
   const product = getProductBySlug(slug);
   if (!product) return {};
+  const cover = storefrontImages(product)[0];
 
   return buildPageMetadata({
     title: product.seo.title,
     description: product.seo.description,
     path: `/catalog/${product.slug}`,
-    image: product.images[0],
+    image: cover,
   });
 }
 
@@ -87,6 +105,8 @@ export default async function CatalogSlugPage({ params }: Props) {
     .slice(0, 3);
   const colorSiblings = getColorSiblings(product);
   const cat = getCategoryById(product.category);
+  const photos = storefrontImages(product);
+  const colorLabel = product.colors.filter(Boolean).join(", ");
 
   return (
     <div className="container-page py-10 md:py-14">
@@ -106,7 +126,7 @@ export default async function CatalogSlugPage({ params }: Props) {
 
       <div className="grid gap-10 lg:grid-cols-2">
         <ProductGallery
-          images={product.images}
+          images={photos}
           alt={productImageAlt(product)}
         />
         <div>
@@ -123,7 +143,9 @@ export default async function CatalogSlugPage({ params }: Props) {
             {product.title}
           </h1>
           <p className="mt-5 text-base leading-relaxed text-ink-muted">
-            {product.description}
+            {isPlaceholderSpec(product.description)
+              ? DESCRIPTION_PLACEHOLDER
+              : product.description}
           </p>
           <div className="mt-8">
             <AddToCartForm product={product} />
@@ -147,43 +169,17 @@ export default async function CatalogSlugPage({ params }: Props) {
           ) : null}
           <ProductTrust />
           <dl className="mt-10 grid gap-3 border-t border-line pt-8 text-sm">
-            <div className="grid grid-cols-[140px_1fr] gap-3">
-              <dt className="text-ink-muted">Артикул</dt>
-              <dd>{product.masterSku || product.id}</dd>
-            </div>
-            <div className="grid grid-cols-[140px_1fr] gap-3">
-              <dt className="text-ink-muted">Цвет</dt>
-              <dd>{product.colors.join(", ")}</dd>
-            </div>
-            <div className="grid grid-cols-[140px_1fr] gap-3">
-              <dt className="text-ink-muted">Сезон</dt>
-              <dd>{product.season}</dd>
-            </div>
-            <div className="grid grid-cols-[140px_1fr] gap-3">
-              <dt className="text-ink-muted">Материалы</dt>
-              <dd>{product.materials}</dd>
-            </div>
-            <div className="grid grid-cols-[140px_1fr] gap-3">
-              <dt className="text-ink-muted">Утеплитель</dt>
-              <dd>{product.insulation}</dd>
-            </div>
-            <div className="grid grid-cols-[140px_1fr] gap-3">
-              <dt className="text-ink-muted">Температура</dt>
-              <dd>{product.temperature}</dd>
-            </div>
-            <div className="grid grid-cols-[140px_1fr] gap-3">
-              <dt className="text-ink-muted">Страна</dt>
-              <dd>{product.country}</dd>
-            </div>
-            {product.care ? (
-              <div className="grid grid-cols-[140px_1fr] gap-3">
-                <dt className="text-ink-muted">Уход</dt>
-                <dd>{product.care}</dd>
-              </div>
-            ) : null}
+            <SpecRow label="Артикул" value={product.masterSku || product.id} />
+            <SpecRow label="Цвет" value={colorLabel} />
+            <SpecRow label="Сезон" value={product.season} />
+            <SpecRow label="Материалы" value={product.materials} />
+            <SpecRow label="Утеплитель" value={product.insulation} />
+            <SpecRow label="Температура" value={product.temperature} />
+            <SpecRow label="Страна" value={product.country} />
+            <SpecRow label="Уход" value={product.care || CARE_PLACEHOLDER} />
           </dl>
           <ul className="mt-8 space-y-2 text-sm text-ink-muted">
-            {product.features.map((f) => (
+            {(product.features.length ? product.features : [SPEC_PLACEHOLDER]).map((f) => (
               <li key={f}>— {f}</li>
             ))}
           </ul>

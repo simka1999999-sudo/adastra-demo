@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { Product } from "@/lib/types";
 import type { CategorySeo, FaqItem } from "../../content/seo/categories";
 import { absoluteUrl, siteConfig } from "@/lib/site";
-import { categoryLabels } from "@/lib/products";
+import { categoryLabels, storefrontImages } from "@/lib/products";
 
 export type BreadcrumbItem = {
   name: string;
@@ -153,12 +153,13 @@ export function faqJsonLd(faq: FaqItem[]) {
 }
 
 export function productJsonLd(product: Product) {
+  const images = storefrontImages(product).map((src) => absoluteUrl(src));
   return {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.title,
     description: product.description,
-    image: product.images.filter(Boolean).map((src) => absoluteUrl(src)),
+    ...(images.length ? { image: images } : {}),
     sku: product.masterSku || product.id,
     brand: { "@type": "Brand", name: "ADASTRA" },
     category: categoryLabels[product.category],

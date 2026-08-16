@@ -1,16 +1,26 @@
 import Link from "next/link";
 import { readCatalog } from "@/lib/catalog-store";
-import { formatPrice, productHasOwnPhotos } from "@/lib/products";
+import { formatPrice, productPhotoStatus } from "@/lib/products";
+
+const PHOTO_LABEL = {
+  ready: { text: "свои", className: "text-success" },
+  mixed: { text: "смесь", className: "text-danger" },
+  lookbook: { text: "заглушка", className: "text-danger" },
+  none: { text: "нет фото", className: "text-danger" },
+} as const;
 
 export default function AdminProductsPage() {
   const list = readCatalog();
-  const placeholders = list.filter((p) => !productHasOwnPhotos(p)).length;
+  const needPhotos = list.filter((p) => productPhotoStatus(p) !== "ready").length;
 
   return (
     <div>
       <p className="mb-6 text-sm text-ink-muted">
-        {list.length} товаров · {placeholders} ещё с lookbook-заглушками (цвет на
-        фото может не совпадать — загрузите свои).
+        {list.length} товаров · {needPhotos} без своих фото. Объём — через{" "}
+        <Link href="/admin/import" className="underline underline-offset-4">
+          Excel
+        </Link>
+        .
       </p>
       <div className="overflow-x-auto border border-line">
         <table className="w-full min-w-[640px] text-left text-sm">
@@ -24,7 +34,7 @@ export default function AdminProductsPage() {
           </thead>
           <tbody>
             {list.map((p) => {
-              const own = productHasOwnPhotos(p);
+              const photo = PHOTO_LABEL[productPhotoStatus(p)];
               return (
                 <tr key={p.id} className="border-b border-line/70">
                   <td className="px-3 py-3">
@@ -36,9 +46,7 @@ export default function AdminProductsPage() {
                   <td className="px-3 py-3">{p.colors[0] || "—"}</td>
                   <td className="px-3 py-3 tabular-nums">{formatPrice(p.price)}</td>
                   <td className="px-3 py-3">
-                    <span className={own ? "text-success" : "text-danger"}>
-                      {own ? "свои" : "заглушка"}
-                    </span>
+                    <span className={photo.className}>{photo.text}</span>
                   </td>
                 </tr>
               );

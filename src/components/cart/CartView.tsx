@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCart } from "@/components/cart/CartProvider";
 import { QtyStepper } from "@/components/ui/QtyStepper";
 import { formatPrice } from "@/lib/products";
+import { ProductPhotoStub } from "@/components/catalog/ProductPhotoStub";
 
 export function CartView() {
   const { items, total, ready, setQuantity, removeItem } = useCart();
@@ -37,7 +38,11 @@ export function CartView() {
             className="grid grid-cols-[96px_1fr] gap-4 border border-line bg-bg-elevated p-3 sm:grid-cols-[120px_1fr_auto]"
           >
             <Link href={`/catalog/${item.slug}`} className="relative aspect-[3/4] overflow-hidden bg-line/40">
-              <Image src={item.image} alt="" fill className="object-cover" sizes="120px" />
+              {item.image ? (
+                <Image src={item.image} alt="" fill className="object-cover" sizes="120px" />
+              ) : (
+                <ProductPhotoStub caption="Нет фото" className="min-h-0" />
+              )}
             </Link>
             <div>
               <Link href={`/catalog/${item.slug}`} className="font-medium underline-offset-4 hover:underline">

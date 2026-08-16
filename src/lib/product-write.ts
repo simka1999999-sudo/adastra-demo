@@ -5,23 +5,36 @@ import {
   buildProductTitle,
   sanitizeSegment,
 } from "@/lib/catalog-identity";
+import {
+  CARE_PLACEHOLDER,
+  COLOR_PLACEHOLDER,
+  DEFAULT_COLLECTION,
+  DEFAULT_COUNTRY,
+  DEFAULT_INSULATION,
+  DEFAULT_SEASON,
+  DEFAULT_SIZE_LABELS,
+  DEFAULT_TEMPERATURE,
+  DESCRIPTION_PLACEHOLDER,
+  SPEC_PLACEHOLDER,
+  filledOr,
+} from "@/lib/catalog-defaults";
 
 export const productWriteSchema = z.object({
   id: z.string().optional(),
   masterSku: z.string().min(1).max(80),
   shortTitle: z.string().min(1).max(80),
-  color: z.string().min(1).max(40),
-  category: z.enum(["overalls", "jackets", "coats", "pants"]),
+  color: z.string().max(40).optional().default(""),
+  category: z.enum(["overalls", "jackets", "coats", "pants"]).default("overalls"),
   gender: z.enum(["women", "men", "unisex"]).default("women"),
   price: z.number().int().positive(),
   oldPrice: z.number().int().positive().optional().nullable(),
-  collection: z.string().min(1),
-  season: z.string().min(1),
-  country: z.string().min(1),
-  materials: z.string().min(1),
-  insulation: z.string().min(1),
-  temperature: z.string().min(1),
-  description: z.string().min(1),
+  collection: z.string().optional().default(""),
+  season: z.string().optional().default(""),
+  country: z.string().optional().default(""),
+  materials: z.string().optional().default(""),
+  insulation: z.string().optional().default(""),
+  temperature: z.string().optional().default(""),
+  description: z.string().optional().default(""),
   features: z.array(z.string()).default([]),
   sizes: z
     .array(
@@ -30,7 +43,7 @@ export const productWriteSchema = z.object({
         inStock: z.boolean().default(true),
       }),
     )
-    .min(1),
+    .default([]),
   care: z.string().optional().default(""),
   colorGroup: z.string().optional().nullable(),
   ozonId: z.number().int().optional().nullable(),
@@ -48,40 +61,45 @@ export function toCatalogProduct(input: ProductWrite, current?: Product): Produc
   const masterSku = sanitizeSegment(input.masterSku.toLowerCase());
   const id = current?.id || `p-${masterSku}`;
   const slug = current?.slug || buildProductSlug({ category: input.category, masterSku });
-  const color = input.color.trim().toLowerCase();
+  const color = filledOr(input.color, COLOR_PLACEHOLDER).toLowerCase();
+  const shortTitle = input.shortTitle.trim();
   const title = buildProductTitle({
     category: input.category,
-    shortTitle: input.shortTitle,
+    shortTitle,
     color,
   });
-  const sizes = input.sizes.map((s) => ({
+  const sizeLabels = input.sizes.length
+    ? input.sizes
+    : DEFAULT_SIZE_LABELS.map((label) => ({ label, inStock: true }));
+  const sizes = sizeLabels.map((s) => ({
     id: `${masterSku}_${s.label}`,
     label: s.label,
     inStock: s.inStock,
   }));
+  const temperature = filledOr(input.temperature, DEFAULT_TEMPERATURE);
   const seoTitle = input.seoTitle.trim() || `${title} — купить`;
   const seoDescription =
     input.seoDescription.trim() ||
-    `${title}. ${input.temperature}. Доставка по России, оплата онлайн.`;
+    `${title}. ${temperature}. Доставка по России, оплата онлайн.`;
 
   return {
     id,
     slug,
     masterSku,
     title,
-    shortTitle: input.shortTitle.trim(),
+    shortTitle,
     price: input.price,
     oldPrice: input.oldPrice || undefined,
     category: input.category,
     gender: input.gender,
     colors: [color],
-    collection: input.collection.trim(),
-    season: input.season.trim(),
-    country: input.country.trim(),
-    materials: input.materials.trim(),
-    insulation: input.insulation.trim(),
-    temperature: input.temperature.trim(),
-    description: input.description.trim(),
+    collection: filledOr(input.collection, DEFAULT_COLLECTION),
+    season: filledOr(input.season, DEFAULT_SEASON),
+    country: filledOr(input.country, DEFAULT_COUNTRY),
+    materials: filledOr(input.materials, SPEC_PLACEHOLDER),
+    insulation: filledOr(input.insulation, DEFAULT_INSULATION),
+    temperature,
+    description: filledOr(input.description, DESCRIPTION_PLACEHOLDER),
     features: input.features.map((f) => f.trim()).filter(Boolean),
     images: current?.images ?? [],
     sizes,
@@ -91,8 +109,8 @@ export function toCatalogProduct(input: ProductWrite, current?: Product): Produc
     isHit: input.isHit,
     isNew: input.isNew,
     colorGroup: input.colorGroup?.trim() || null,
-    care: input.care?.trim() || undefined,
-    ozonId: input.ozonId ?? null,
-    hitRank: input.isHit ? (input.hitRank ?? 50) : undefined,
+    care: filledOr(input.care, current?.care || CARE_PLACEHOLDER),
+    ozonId: input.ozonId ?? current?.ozonId ?? null,
+    hitRank: input.isHit ? (input.hitRank ?? current?.hitRank ?? 50) : undefined,
   };
 }

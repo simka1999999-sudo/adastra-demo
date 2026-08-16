@@ -1,21 +1,32 @@
 import { products as bundled, categoryLabels } from "../../content/products";
 import type { Product } from "./types";
+import { isRealProductPhoto, productPhotoStatus } from "./catalog-defaults";
 
 export { categoryLabels };
 
 /** Снимок JSON на момент сборки (GitHub Pages / sitemap). */
 export const products = bundled;
 
+export {
+  displaySpec,
+  isLookbookPlaceholder,
+  isPlaceholderSpec,
+  isRealProductPhoto,
+  isUploadedPhoto,
+  productPhotoStatus,
+  storefrontImages,
+} from "./catalog-defaults";
+
 export function isOwnProductPhoto(src: string) {
   return src.startsWith("/uploads/products/");
 }
 
 export function isPlaceholderPhoto(src: string) {
-  return !isOwnProductPhoto(src);
+  return !isRealProductPhoto(src);
 }
 
 export function productHasOwnPhotos(product: Pick<Product, "images">) {
-  return product.images.length > 0 && product.images.every(isOwnProductPhoto);
+  return productPhotoStatus(product) === "ready";
 }
 
 export function productImageAlt(

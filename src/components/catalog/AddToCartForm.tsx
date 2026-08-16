@@ -6,7 +6,7 @@ import type { Product } from "@/lib/types";
 import { useCart } from "@/components/cart/CartProvider";
 import { ChipButton } from "@/components/ui/Chip";
 import { QtyStepper } from "@/components/ui/QtyStepper";
-import { formatPrice } from "@/lib/products";
+import { formatPrice, storefrontImages } from "@/lib/products";
 
 export function AddToCartForm({ product }: { product: Product }) {
   const { addItem } = useCart();
@@ -30,7 +30,7 @@ export function AddToCartForm({ product }: { product: Product }) {
       sizeId: selected.id,
       sizeLabel: selected.label,
       quantity: qty,
-      image: product.images[0] || "",
+      image: storefrontImages(product)[0] || "",
     });
     setMessage("ok");
   }
@@ -57,19 +57,23 @@ export function AddToCartForm({ product }: { product: Product }) {
           </Link>
         </div>
         <div className="flex flex-wrap gap-1.5">
-          {product.sizes.map((s) => (
-            <ChipButton
-              key={s.id}
-              active={sizeId === s.id}
-              disabled={!s.inStock}
-              onClick={() => {
-                setSizeId(s.id);
-                setMessage("");
-              }}
-            >
-              {s.label}
-            </ChipButton>
-          ))}
+          {product.sizes.length ? (
+            product.sizes.map((s) => (
+              <ChipButton
+                key={s.id}
+                active={sizeId === s.id}
+                disabled={!s.inStock}
+                onClick={() => {
+                  setSizeId(s.id);
+                  setMessage("");
+                }}
+              >
+                {s.label}
+              </ChipButton>
+            ))
+          ) : (
+            <p className="text-sm text-ink-muted">Размеры уточняются</p>
+          )}
         </div>
         {message === "size" ? (
           <p className="mt-2 text-sm text-danger">Выберите размер</p>

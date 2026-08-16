@@ -59,6 +59,16 @@ export function upsertCatalogProduct(next: Product) {
   return next;
 }
 
+export function upsertCatalogProducts(items: Product[]) {
+  const list = readCatalog();
+  for (const next of items) {
+    const i = list.findIndex((p) => p.id === next.id);
+    if (i === -1) list.push(next);
+    else list[i] = next;
+  }
+  writeCatalog(list);
+}
+
 export function removeCatalogProduct(id: string) {
   writeCatalog(readCatalog().filter((p) => p.id !== id));
 }

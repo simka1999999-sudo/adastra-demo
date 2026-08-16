@@ -4,15 +4,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Product } from "@/lib/types";
 import { buildProductTitle } from "@/lib/catalog-identity";
-import { isOwnProductPhoto, productHasOwnPhotos } from "@/lib/products";
+import { isUploadedPhoto, productPhotoStatus } from "@/lib/products";
+import { DEFAULT_SIZE_LABELS } from "@/lib/catalog-defaults";
 import { withBasePath } from "@/lib/site";
-
-const DEFAULT_SIZES = `158 S 44
-164 M 46
-164 L 48
-170 M 46
-170 L 48
-176 M 46`;
 
 type Props = { product?: Product };
 
@@ -27,7 +21,7 @@ export function ProductForm({ product }: Props) {
     product?.category ?? "overalls",
   );
   const previewTitle = buildProductTitle({ category, shortTitle, color });
-  const own = productHasOwnPhotos({ images });
+  const photoKind = productPhotoStatus({ images });
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -193,7 +187,7 @@ export function ProductForm({ product }: Props) {
         </p>
         <div>
           <label className="label" htmlFor="description">Описание</label>
-          <textarea id="description" name="description" className="field min-h-28" required defaultValue={product?.description ?? ""} />
+          <textarea id="description" name="description" className="field min-h-28" defaultValue={product?.description ?? ""} />
         </div>
         <div>
           <label className="label" htmlFor="features">Особенности (каждая с новой строки)</label>
@@ -206,13 +200,13 @@ export function ProductForm({ product }: Props) {
             name="sizes"
             className="field min-h-32 font-mono text-sm"
             required
-            defaultValue={(product?.sizes ?? []).map((s) => s.label).join("\n") || DEFAULT_SIZES}
+            defaultValue={(product?.sizes ?? []).map((s) => s.label).join("\n") || DEFAULT_SIZE_LABELS.join("\n")}
           />
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
             <label className="label" htmlFor="materials">Материалы</label>
-            <textarea id="materials" name="materials" className="field min-h-24" required defaultValue={product?.materials ?? ""} />
+            <textarea id="materials" name="materials" className="field min-h-24" defaultValue={product?.materials ?? ""} />
           </div>
           <div>
             <label className="label" htmlFor="care">Уход</label>
@@ -220,11 +214,11 @@ export function ProductForm({ product }: Props) {
           </div>
           <div>
             <label className="label" htmlFor="insulation">Утеплитель</label>
-            <input id="insulation" name="insulation" className="field" required defaultValue={product?.insulation ?? ""} />
+            <input id="insulation" name="insulation" className="field" defaultValue={product?.insulation ?? ""} />
           </div>
           <div>
             <label className="label" htmlFor="temperature">Температура</label>
-            <input id="temperature" name="temperature" className="field" required defaultValue={product?.temperature ?? "от -5°С до -30°С"} />
+            <input id="temperature" name="temperature" className="field" defaultValue={product?.temperature ?? "от -5°С до -30°С"} />
           </div>
           <div>
             <label className="label" htmlFor="collection">Коллекция</label>
@@ -255,12 +249,14 @@ export function ProductForm({ product }: Props) {
       <aside className="space-y-5">
         <div className="border border-line bg-bg-elevated p-4">
           <p className="label mb-3">Фото этой карточки</p>
-          <p className={`mb-3 text-sm ${own ? "text-success" : "text-danger"}`}>
-            {own
-              ? "Свои загруженные фото"
-              : images.length
-                ? "Сейчас lookbook-заглушки — цвет на фото может не совпадать"
-                : "Нет фото"}
+          <p className={`mb-3 text-sm ${photoKind === "ready" ? "text-success" : "text-danger"}`}>
+            {photoKind === "ready"
+              ? "Свои фото модели"
+              : photoKind === "mixed"
+                ? "Смешаны свои фото и lookbook — лучше оставить только снимки этой модели"
+                : images.length
+                  ? "Lookbook-заглушки — цвет на фото может не совпадать"
+                  : "Нет фото — на витрине будет заглушка"}
           </p>
           <div className="grid grid-cols-2 gap-2">
             {images.map((src) => (
@@ -273,7 +269,7 @@ export function ProductForm({ product }: Props) {
                   disabled={!product || pending}
                   onClick={() => void removePhoto(src)}
                 >
-                  {isOwnProductPhoto(src) ? "Удалить" : "Убрать заглушку"}
+                  {isUploadedPhoto(src) ? "Удалить" : "Убрать"}
                 </button>
               </figure>
             ))}

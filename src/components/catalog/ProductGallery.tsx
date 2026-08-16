@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { ProductPhotoStub } from "@/components/catalog/ProductPhotoStub";
 
 export function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
   const [active, setActive] = useState(0);
@@ -9,9 +10,10 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
 
   if (!images.length) {
     return (
-      <div className="flex aspect-[3/4] items-center justify-center border border-line bg-ice px-6 text-center text-sm text-ink-muted">
-        Фото ещё не загружены. В админке к этому артикулу нужно добавить снимки
-        именно этого цвета.
+      <div className="overflow-hidden border border-line">
+        <div className="aspect-[3/4]">
+          <ProductPhotoStub caption="Фото этой модели появится позже" />
+        </div>
       </div>
     );
   }
