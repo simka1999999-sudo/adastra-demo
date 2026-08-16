@@ -1,22 +1,29 @@
-import { products, categoryLabels } from "../../content/products";
+import { products as bundled, categoryLabels } from "../../content/products";
 import type { Product } from "./types";
 
-export { products, categoryLabels };
+export { categoryLabels };
 
-export function getProductBySlug(slug: string): Product | undefined {
-  return products.find((p) => p.slug === slug);
+/** Снимок JSON на момент сборки (GitHub Pages / sitemap). */
+export const products = bundled;
+
+export function isOwnProductPhoto(src: string) {
+  return src.startsWith("/uploads/products/");
 }
 
-export function getProductById(id: string): Product | undefined {
-  return products.find((p) => p.id === id);
+export function isPlaceholderPhoto(src: string) {
+  return !isOwnProductPhoto(src);
 }
 
-export function getFeaturedProducts(): Product[] {
-  const hits = products
-    .filter((p) => p.inStock && p.isHit)
-    .sort((a, b) => (a.hitRank ?? 99) - (b.hitRank ?? 99));
-  if (hits.length) return hits;
-  return products.filter((p) => p.featured && p.inStock).slice(0, 6);
+export function productHasOwnPhotos(product: Pick<Product, "images">) {
+  return product.images.length > 0 && product.images.every(isOwnProductPhoto);
+}
+
+export function productImageAlt(
+  product: Pick<Product, "title" | "shortTitle" | "colors">,
+  index = 0,
+) {
+  const base = product.title || product.shortTitle;
+  return index === 0 ? base : `${base} · фото ${index + 1}`;
 }
 
 /** Рост из ярлыка: «164 M 46» → 164, «122» → 122. */
@@ -32,16 +39,6 @@ export function isKidsCollection(product: Product): boolean {
 
 export function isWomenCollection(product: Product): boolean {
   return /женск/i.test(product.collection) || product.gender === "women";
-}
-
-export function getColorSiblings(product: Product): Product[] {
-  if (!product.colorGroup) return [];
-  return products.filter(
-    (p) =>
-      p.inStock &&
-      p.colorGroup === product.colorGroup &&
-      p.id !== product.id,
-  );
 }
 
 export type ProductFilters = {
@@ -96,32 +93,22 @@ export function applyFacets(
   }
 }
 
-export function filterProducts(filters: ProductFilters = {}): Product[] {
-  let list = products.filter((p) => p.inStock);
-
-  if (filters.category) {
-    list = list.filter((p) => p.category === filters.category);
-  }
+export function scopeProducts(list: Product[], filters: ProductFilters = {}): Product[] {
+  let next = list.filter((p) => p.inStock);
+  if (filters.category) next = next.filter((p) => p.category === filters.category);
   if (filters.audience === "women") {
-    list = list.filter((p) => isWomenCollection(p) && !isKidsCollection(p));
+    next = next.filter((p) => isWomenCollection(p) && !isKidsCollection(p));
   }
-  return applyFacets(list, filters);
+  return applyFacets(next, filters);
 }
 
-export function getFilterOptions(scope: ProductFilters = {}) {
-  let list = products.filter((p) => p.inStock);
-  if (scope.category) {
-    list = list.filter((p) => p.category === scope.category);
-  }
-  if (scope.audience === "women") {
-    list = list.filter((p) => isWomenCollection(p) && !isKidsCollection(p));
-  }
-
-  const colors = Array.from(new Set(list.flatMap((p) => p.colors))).sort();
-  const collections = Array.from(new Set(list.map((p) => p.collection))).sort();
+export function getFilterOptions(list: Product[]) {
+  const inStock = list.filter((p) => p.inStock);
+  const colors = Array.from(new Set(inStock.flatMap((p) => p.colors))).sort();
+  const collections = Array.from(new Set(inStock.map((p) => p.collection))).sort();
   const sizes = Array.from(
     new Set(
-      list.flatMap((p) =>
+      inStock.flatMap((p) =>
         p.sizes
           .filter((s) => s.inStock)
           .map((s) => sizeHeight(s.label))

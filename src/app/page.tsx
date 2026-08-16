@@ -8,7 +8,7 @@ import { Reveal } from "@/components/Reveal";
 import { featuresCompact, useCases } from "../../content/home";
 import { instagramHandle, instagramPosts } from "../../content/instagram";
 import { ozonReviews, ozonReviewsMeta } from "../../content/reviews";
-import { getFeaturedProducts } from "@/lib/products";
+import { getFeaturedProducts } from "@/lib/catalog-query";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 

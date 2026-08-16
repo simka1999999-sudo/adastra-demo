@@ -5,6 +5,16 @@ import { useState } from "react";
 
 export function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
   const [active, setActive] = useState(0);
+  const cover = images[active] ?? images[0];
+
+  if (!images.length) {
+    return (
+      <div className="flex aspect-[3/4] items-center justify-center border border-line bg-ice px-6 text-center text-sm text-ink-muted">
+        Фото ещё не загружены. В админке к этому артикулу нужно добавить снимки
+        именно этого цвета.
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-3 md:grid-cols-[88px_1fr]">
@@ -25,7 +35,7 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
       </div>
       <div className="relative order-1 aspect-[3/4] overflow-hidden bg-line/30 md:order-2">
         <Image
-          src={images[active] ?? images[0]}
+          src={cover}
           alt={alt}
           fill
           priority

@@ -4,6 +4,7 @@ import { getFilterOptions } from "@/lib/products";
 import type { Product } from "@/lib/types";
 
 type Props = {
+  products: Product[];
   current: {
     category?: string;
     color?: string;
@@ -67,11 +68,16 @@ function titleCase(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
-function FilterGroups({ current, path }: { current: Props["current"]; path: string }) {
-  const { categories, colors, sizes, collections } = getFilterOptions({
-    category: current.category,
-    audience: current.audience,
-  });
+function FilterGroups({
+  current,
+  path,
+  products,
+}: {
+  current: Props["current"];
+  path: string;
+  products: Product[];
+}) {
+  const { categories, colors, sizes, collections } = getFilterOptions(products);
   const hasFacet = Boolean(
     current.color || current.size || current.sort || current.collection,
   );
@@ -188,13 +194,13 @@ function FilterGroups({ current, path }: { current: Props["current"]; path: stri
   );
 }
 
-export function CatalogFilters({ current, basePath }: Props) {
+export function CatalogFilters({ current, basePath, products }: Props) {
   const path =
     basePath ||
     (current.category
       ? getCategoryPath(current.category as Product["category"])
       : "/catalog");
-  const bodyProps = { current, path };
+  const bodyProps = { current, path, products };
 
   return (
     <>

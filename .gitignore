@@ -63,3 +63,7 @@ skills-lock.json
 # raw client drops (DropMeFiles originals)
 /_client_drop/
 /_audit/
+
+# фото из админки
+/public/uploads/products/**
+!/public/uploads/products/.gitkeep

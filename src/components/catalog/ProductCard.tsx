@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
-import { categoryLabels, formatPrice } from "@/lib/products";
+import { categoryLabels, formatPrice, productImageAlt } from "@/lib/products";
 
 export function ProductCard({ product }: { product: Product }) {
+  const cover = product.images[0];
   const secondary = product.images[1];
   const badge = product.isHit ? "Хит" : product.isNew ? "Новинка" : null;
 
@@ -11,13 +12,19 @@ export function ProductCard({ product }: { product: Product }) {
     <article className="group">
       <Link href={`/catalog/${product.slug}`} className="block">
         <div className="product-media relative aspect-[3/4] overflow-hidden bg-ice">
-          <Image
-            src={product.images[0]}
-            alt={product.title}
-            fill
-            sizes="(max-width: 768px) 50vw, 25vw"
-            className="img-primary object-cover"
-          />
+          {cover ? (
+            <Image
+              src={cover}
+              alt={productImageAlt(product)}
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
+              className="img-primary object-cover"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center px-4 text-center text-sm text-ink-muted">
+              Фото появится после загрузки в админке
+            </div>
+          )}
           {secondary ? (
             <Image
               src={secondary}
@@ -39,6 +46,7 @@ export function ProductCard({ product }: { product: Product }) {
           <div className="min-w-0 space-y-1">
             <p className="text-[0.65rem] font-semibold tracking-[0.16em] uppercase text-ink-muted">
               {categoryLabels[product.category]}
+              {product.colors[0] ? ` · ${product.colors[0]}` : ""}
             </p>
             <h3 className="text-[0.95rem] leading-snug tracking-tight">
               {product.shortTitle}

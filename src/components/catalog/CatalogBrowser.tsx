@@ -48,6 +48,7 @@ function CatalogResults({
   return (
     <div className="grid gap-6 md:grid-cols-[220px_1fr] md:items-start md:gap-8 lg:grid-cols-[240px_1fr] lg:gap-10">
       <CatalogFilters
+        products={products}
         current={{
           ...filterCurrent,
           color: facets.color,

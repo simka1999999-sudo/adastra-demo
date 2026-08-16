@@ -20,12 +20,12 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/cart", "/checkout", "/order/", "/api/", "/account/"],
+        disallow: ["/cart", "/checkout", "/order/", "/api/", "/account/", "/admin"],
       },
       {
         userAgent: "Yandex",
         allow: "/",
-        disallow: ["/cart", "/checkout", "/order/", "/api/", "/account/"],
+        disallow: ["/cart", "/checkout", "/order/", "/api/", "/account/", "/admin"],
       },
     ],
     sitemap: `${siteConfig.url}/sitemap.xml`,

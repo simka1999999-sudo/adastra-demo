@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
-import { filterProducts } from "@/lib/products";
+import { filterProducts } from "@/lib/catalog-query";
 import { buildPageMetadata, itemListJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({

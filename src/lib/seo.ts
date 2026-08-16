@@ -158,7 +158,7 @@ export function productJsonLd(product: Product) {
     "@type": "Product",
     name: product.title,
     description: product.description,
-    image: product.images.map((src) => absoluteUrl(src)),
+    image: product.images.filter(Boolean).map((src) => absoluteUrl(src)),
     sku: product.masterSku || product.id,
     brand: { "@type": "Brand", name: "ADASTRA" },
     category: categoryLabels[product.category],

@@ -38,6 +38,7 @@ jobs:
         run: |
           mkdir -p .export-stash
           mv src/app/api .export-stash/api
+          if [ -d src/app/admin ]; then mv src/app/admin .export-stash/admin; fi
           mv src/middleware.ts .export-stash/middleware.ts
 
       - run: npm run build

@@ -17,6 +17,9 @@ cleanup() {
   if [[ -d "$STASH/api" && ! -d src/app/api ]]; then
     mv "$STASH/api" src/app/api
   fi
+  if [[ -d "$STASH/admin" && ! -d src/app/admin ]]; then
+    mv "$STASH/admin" src/app/admin
+  fi
   if [[ -f "$STASH/middleware.ts" && ! -f src/middleware.ts ]]; then
     mv "$STASH/middleware.ts" src/middleware.ts
   fi
@@ -26,6 +29,9 @@ trap cleanup EXIT
 
 if [[ -d src/app/api ]]; then
   mv src/app/api "$STASH/api"
+fi
+if [[ -d src/app/admin ]]; then
+  mv src/app/admin "$STASH/admin"
 fi
 if [[ -f src/middleware.ts ]]; then
   mv src/middleware.ts "$STASH/middleware.ts"

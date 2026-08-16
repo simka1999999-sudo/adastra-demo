@@ -30,7 +30,7 @@ export function AddToCartForm({ product }: { product: Product }) {
       sizeId: selected.id,
       sizeLabel: selected.label,
       quantity: qty,
-      image: product.images[0],
+      image: product.images[0] || "",
     });
     setMessage("ok");
   }

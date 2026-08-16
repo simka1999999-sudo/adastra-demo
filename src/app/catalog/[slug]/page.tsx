@@ -15,13 +15,13 @@ import {
   getCategoryPath,
   allCategorySlugs,
 } from "@/lib/categories";
+import { categoryLabels, productImageAlt } from "@/lib/products";
 import {
-  categoryLabels,
   filterProducts,
   getColorSiblings,
   getProductBySlug,
-  products,
-} from "@/lib/products";
+  getAllProducts,
+} from "@/lib/catalog-query";
 import {
   buildPageMetadata,
   productJsonLd,
@@ -31,12 +31,12 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   return [
     ...allCategorySlugs().map((slug) => ({ slug })),
-    ...products.map((p) => ({ slug: p.slug })),
+    ...getAllProducts().map((p) => ({ slug: p.slug })),
   ];
 }
 
@@ -83,7 +83,7 @@ export default async function CatalogSlugPage({ params }: Props) {
   const product = getProductBySlug(slug);
   if (!product) notFound();
 
-  const related = products
+  const related = getAllProducts()
     .filter((p) => p.category === product.category && p.id !== product.id)
     .sort((a, b) => (a.hitRank ?? 99) - (b.hitRank ?? 99))
     .slice(0, 3);
@@ -107,7 +107,10 @@ export default async function CatalogSlugPage({ params }: Props) {
       />
 
       <div className="grid gap-10 lg:grid-cols-2">
-        <ProductGallery images={product.images} alt={product.title} />
+        <ProductGallery
+          images={product.images}
+          alt={productImageAlt(product)}
+        />
         <div>
           <p className="text-[0.72rem] tracking-[0.14em] uppercase text-ink-muted">
             {categoryLabels[product.category]} · {product.collection}
