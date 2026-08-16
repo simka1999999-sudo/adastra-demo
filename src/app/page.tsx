@@ -2,12 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ProductCard } from "@/components/catalog/ProductCard";
+import { CategoryNav } from "@/components/catalog/CategoryNav";
 import { HeroBanner } from "@/components/HeroBanner";
 import { Reveal } from "@/components/Reveal";
 import { featuresCompact, useCases } from "../../content/home";
 import { instagramHandle, instagramPosts } from "../../content/instagram";
 import { ozonReviews, ozonReviewsMeta } from "../../content/reviews";
-import { categories } from "@/lib/categories";
 import { getFeaturedProducts } from "@/lib/products";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
@@ -97,7 +97,7 @@ export default function HomePage() {
 
       <section className="container-page py-16 md:py-24">
         <Reveal>
-          <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="mb-10">
             <div>
               <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
                 Хиты
@@ -106,18 +106,7 @@ export default function HomePage() {
                 Заказаны в большом количестве
               </h2>
             </div>
-            <ul className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
-              {categories.map((c) => (
-                <li key={c.id}>
-                  <Link
-                    href={`/catalog/${c.slug}`}
-                    className="underline underline-offset-4"
-                  >
-                    {c.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <CategoryNav className="mt-6" />
           </div>
         </Reveal>
         <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 md:gap-x-6">

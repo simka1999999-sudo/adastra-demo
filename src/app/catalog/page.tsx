@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
-import { categories } from "@/lib/categories";
 import { filterProducts } from "@/lib/products";
 import { buildPageMetadata, itemListJsonLd } from "@/lib/seo";
 
@@ -38,18 +36,6 @@ export default function CatalogPage() {
         <p className="mt-4 text-ink-muted">
           Утеплённая одежда ADASTRA: комбинезоны, куртки, пальто и брюки.
         </p>
-        <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-2 text-sm">
-          {categories.map((c) => (
-            <li key={c.id}>
-              <Link
-                href={`/catalog/${c.slug}`}
-                className="underline underline-offset-4 text-ink"
-              >
-                {c.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
       </header>
 
       <CatalogBrowser
