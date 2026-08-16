@@ -1,0 +1,233 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { AddToCartForm } from "@/components/catalog/AddToCartForm";
+import { CategoryView } from "@/components/catalog/CategoryView";
+import { ProductGallery } from "@/components/catalog/ProductGallery";
+import { ProductCard } from "@/components/catalog/ProductCard";
+import { ProductTrust } from "@/components/catalog/ProductTrust";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { ProductViewTracker } from "@/components/seo/ProductViewTracker";
+import { JsonLd } from "@/components/JsonLd";
+import {
+  getCategoryById,
+  getCategoryBySlug,
+  getCategoryPath,
+  allCategorySlugs,
+} from "@/lib/categories";
+import {
+  categoryLabels,
+  filterProducts,
+  getColorSiblings,
+  getProductBySlug,
+  products,
+} from "@/lib/products";
+import {
+  buildPageMetadata,
+  productJsonLd,
+} from "@/lib/seo";
+
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  return [
+    ...allCategorySlugs().map((slug) => ({ slug })),
+    ...products.map((p) => ({ slug: p.slug })),
+  ];
+}
+
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const category = getCategoryBySlug(slug);
+
+  if (category) {
+    return buildPageMetadata({
+      title: category.title,
+      description: category.description,
+      path: `/catalog/${category.slug}`,
+      image: category.ogImage,
+      follow: true,
+    });
+  }
+
+  const product = getProductBySlug(slug);
+  if (!product) return {};
+
+  return buildPageMetadata({
+    title: product.seo.title,
+    description: product.seo.description,
+    path: `/catalog/${product.slug}`,
+    image: product.images[0],
+  });
+}
+
+export default async function CatalogSlugPage({ params }: Props) {
+  const { slug } = await params;
+
+  const category = getCategoryBySlug(slug);
+  if (category) {
+    const list = filterProducts({
+      category: category.id,
+      audience: "women",
+    });
+
+    return <CategoryView category={category} products={list} />;
+  }
+
+  const product = getProductBySlug(slug);
+  if (!product) notFound();
+
+  const related = products
+    .filter((p) => p.category === product.category && p.id !== product.id)
+    .sort((a, b) => (a.hitRank ?? 99) - (b.hitRank ?? 99))
+    .slice(0, 3);
+  const colorSiblings = getColorSiblings(product);
+  const cat = getCategoryById(product.category);
+
+  return (
+    <div className="container-page py-10 md:py-14">
+      <ProductViewTracker product={product} />
+      <JsonLd data={productJsonLd(product)} />
+      <Breadcrumbs
+        items={[
+          { name: "Главная", path: "/" },
+          { name: "Каталог", path: "/catalog" },
+          {
+            name: categoryLabels[product.category],
+            path: getCategoryPath(product.category),
+          },
+          { name: product.shortTitle },
+        ]}
+      />
+
+      <div className="grid gap-10 lg:grid-cols-2">
+        <ProductGallery images={product.images} alt={product.title} />
+        <div>
+          <p className="text-[0.72rem] tracking-[0.14em] uppercase text-ink-muted">
+            {categoryLabels[product.category]} · {product.collection}
+            {product.masterSku ? ` · ${product.masterSku}` : ""}
+          </p>
+          {product.isHit || product.isNew ? (
+            <p className="mt-3 text-[0.62rem] font-semibold tracking-[0.16em] uppercase text-frost-deep">
+              {product.isHit ? "Хит" : "Новинка"}
+            </p>
+          ) : null}
+          <h1 className="display mt-3 text-[clamp(1.7rem,3vw,2.6rem)] leading-[1.05] tracking-[-0.03em] normal-case">
+            {product.title}
+          </h1>
+          <p className="mt-5 text-base leading-relaxed text-ink-muted">
+            {product.description}
+          </p>
+          <div className="mt-8">
+            <AddToCartForm product={product} />
+          </div>
+          {colorSiblings.length ? (
+            <div className="mt-6">
+              <p className="label">В этой линейке</p>
+              <ul className="mt-2 flex flex-wrap gap-2 text-sm">
+                <li className="border border-ink px-3 py-1.5">
+                  {product.shortTitle}
+                </li>
+                {colorSiblings.map((sibling) => (
+                  <li key={sibling.id}>
+                    <Link
+                      href={`/catalog/${sibling.slug}`}
+                      className="block border border-line px-3 py-1.5 hover:border-ink"
+                    >
+                      {sibling.shortTitle}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          <ProductTrust />
+          <dl className="mt-10 grid gap-3 border-t border-line pt-8 text-sm">
+            <div className="grid grid-cols-[140px_1fr] gap-3">
+              <dt className="text-ink-muted">Артикул</dt>
+              <dd>{product.masterSku || product.id}</dd>
+            </div>
+            <div className="grid grid-cols-[140px_1fr] gap-3">
+              <dt className="text-ink-muted">Цвет</dt>
+              <dd>{product.colors.join(", ")}</dd>
+            </div>
+            <div className="grid grid-cols-[140px_1fr] gap-3">
+              <dt className="text-ink-muted">Сезон</dt>
+              <dd>{product.season}</dd>
+            </div>
+            <div className="grid grid-cols-[140px_1fr] gap-3">
+              <dt className="text-ink-muted">Материалы</dt>
+              <dd>{product.materials}</dd>
+            </div>
+            <div className="grid grid-cols-[140px_1fr] gap-3">
+              <dt className="text-ink-muted">Утеплитель</dt>
+              <dd>{product.insulation}</dd>
+            </div>
+            <div className="grid grid-cols-[140px_1fr] gap-3">
+              <dt className="text-ink-muted">Температура</dt>
+              <dd>{product.temperature}</dd>
+            </div>
+            <div className="grid grid-cols-[140px_1fr] gap-3">
+              <dt className="text-ink-muted">Страна</dt>
+              <dd>{product.country}</dd>
+            </div>
+            {product.care ? (
+              <div className="grid grid-cols-[140px_1fr] gap-3">
+                <dt className="text-ink-muted">Уход</dt>
+                <dd>{product.care}</dd>
+              </div>
+            ) : null}
+          </dl>
+          <ul className="mt-8 space-y-2 text-sm text-ink-muted">
+            {product.features.map((f) => (
+              <li key={f}>— {f}</li>
+            ))}
+          </ul>
+          <p className="mt-8 text-sm">
+            <Link href="/size-guide" className="underline underline-offset-4">
+              Как выбрать размер
+            </Link>
+            {" · "}
+            <Link href="/delivery" className="underline underline-offset-4">
+              Доставка и оплата
+            </Link>
+            {" · "}
+            <Link href="/returns" className="underline underline-offset-4">
+              Возврат
+            </Link>
+            {cat ? (
+              <>
+                {" · "}
+                <Link
+                  href={getCategoryPath(product.category)}
+                  className="underline underline-offset-4"
+                >
+                  Все {cat.label.toLowerCase()}
+                </Link>
+              </>
+            ) : null}
+          </p>
+        </div>
+      </div>
+
+      {related.length ? (
+        <section className="mt-20">
+          <h2 className="display mb-8 text-[clamp(1.6rem,3vw,2.2rem)] tracking-[-0.03em]">
+            Также из категории
+          </h2>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
+            {related.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </div>
+  );
+}
