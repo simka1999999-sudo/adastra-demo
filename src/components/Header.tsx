@@ -5,8 +5,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCart } from "@/components/cart/CartProvider";
-import { mainNav } from "@/lib/nav";
+import { ChipLink } from "@/components/ui/Chip";
+import { categories } from "@/lib/categories";
+import { buyerNav, companyNav } from "@/lib/nav";
 import { formatPhoneDisplay, siteConfig, socialNav } from "@/lib/site";
+
+function navActive(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function Header() {
   const { count } = useCart();
@@ -45,15 +52,20 @@ export function Header() {
             : "border-b border-transparent bg-transparent"
         }`}
       >
-        <div className="container-page flex min-h-[var(--nav-h)] items-center justify-between gap-4 py-3">
-          <div className="flex items-center gap-4 sm:gap-6">
+        <div className="container-page flex min-h-[var(--nav-h)] items-center justify-between gap-3 py-3 lg:gap-6">
+          <div className="flex min-w-0 items-center gap-3 sm:gap-5">
             <button
               type="button"
-              className={`text-sm font-semibold tracking-[0.12em] uppercase md:text-base ${tone}`}
+              className={`inline-flex min-h-10 min-w-10 items-center gap-2 px-1 text-sm font-semibold tracking-[0.12em] uppercase md:text-base ${tone}`}
               aria-expanded={open}
               aria-controls="side-nav"
               onClick={() => setOpen(true)}
             >
+              <span className="flex w-4 flex-col gap-1" aria-hidden>
+                <span className="block h-px w-full bg-current" />
+                <span className="block h-px w-full bg-current" />
+                <span className="block h-px w-full bg-current" />
+              </span>
               Меню
             </button>
             <Link href="/" className="relative block h-10 w-56 sm:h-11 sm:w-64 md:h-12 md:w-72">
@@ -63,7 +75,7 @@ export function Header() {
                     ? "/brand/logo-wordmark-dark.png"
                     : "/brand/logo-wordmark-light.png"
                 }
-                alt="ADASTRA"
+                alt="ADASTRA — на главную"
                 fill
                 className="object-contain object-left"
                 sizes="(max-width: 640px) 224px, 288px"
@@ -72,7 +84,7 @@ export function Header() {
             </Link>
           </div>
 
-          <div className={`flex items-center gap-5 sm:gap-7 ${tone}`}>
+          <div className={`flex shrink-0 items-center gap-4 sm:gap-6 ${tone}`}>
             <div className="hidden text-right md:block">
               <a
                 href={`tel:${siteConfig.phoneRaw}`}
@@ -86,7 +98,7 @@ export function Header() {
             </div>
             <Link
               href="/cart"
-              className="relative inline-flex items-center gap-2 text-sm font-semibold tracking-[0.12em] uppercase"
+              className="relative inline-flex min-h-10 items-center gap-2 text-sm font-semibold tracking-[0.12em] uppercase"
               aria-label={`Корзина, товаров: ${count}`}
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -101,13 +113,13 @@ export function Header() {
                   strokeWidth="1.5"
                 />
               </svg>
+              <span className="hidden sm:inline">Корзина</span>
               <span className="tabular-nums">{count}</span>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Left drawer */}
       <div
         className={`fixed inset-0 z-[60] transition ${open ? "pointer-events-auto" : "pointer-events-none"}`}
         aria-hidden={!open}
@@ -128,7 +140,7 @@ export function Header() {
             <span className="relative block h-10 w-56">
               <Image
                 src="/brand/logo-wordmark-dark.png"
-                alt="ADASTRA"
+                alt=""
                 fill
                 className="object-contain object-left"
                 sizes="224px"
@@ -136,44 +148,78 @@ export function Header() {
             </span>
             <button
               type="button"
-              className="text-sm font-semibold tracking-[0.12em] uppercase text-ink-muted"
+              className="inline-flex min-h-10 items-center text-sm font-semibold tracking-[0.12em] uppercase text-ink-muted"
               onClick={() => setOpen(false)}
             >
               Закрыть
             </button>
           </div>
-          <ul className="flex-1 overflow-y-auto px-6 py-4">
-            {mainNav.map((item) => {
-              const active =
-                item.href === "/"
-                  ? pathname === "/"
-                  : pathname === item.href || pathname.startsWith(`${item.href}/`);
-              return (
+          <div className="flex-1 overflow-y-auto px-6 py-5">
+            <p className="label">Каталог</p>
+            <div className="flex flex-wrap gap-1.5">
+              <ChipLink href="/catalog" active={pathname === "/catalog"}>
+                Все
+              </ChipLink>
+              {categories.map((c) => (
+                <ChipLink
+                  key={c.id}
+                  href={`/catalog/${c.slug}`}
+                  active={navActive(pathname, `/catalog/${c.slug}`)}
+                >
+                  {c.label}
+                </ChipLink>
+              ))}
+            </div>
+
+            <p className="label mt-8">Покупателям</p>
+            <ul>
+              {buyerNav.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className={`block border-b border-line/70 py-4 text-base font-semibold tracking-[0.1em] uppercase transition-colors ${
-                      active ? "text-ink" : "text-ink-muted hover:text-ink"
+                    className={`block min-h-11 border-b border-line/70 py-3 text-[0.95rem] font-medium ${
+                      navActive(pathname, item.href)
+                        ? "text-ink"
+                        : "text-ink-muted hover:text-ink"
                     }`}
                   >
                     {item.label}
                   </Link>
                 </li>
-              );
-            })}
-          </ul>
+              ))}
+            </ul>
+
+            <p className="label mt-8">О магазине</p>
+            <ul>
+              {companyNav.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`block min-h-11 border-b border-line/70 py-3 text-[0.95rem] font-medium ${
+                      navActive(pathname, item.href)
+                        ? "text-ink"
+                        : "text-ink-muted hover:text-ink"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
           <div className="border-t border-line px-6 py-5 text-base">
             <a href={`tel:${siteConfig.phoneRaw}`} className="font-semibold">
               {formatPhoneDisplay()}
             </a>
             <p className="mt-1 text-sm text-ink-muted">{siteConfig.hours}</p>
-            <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold tracking-[0.08em] uppercase text-ink-muted">
+            <div className="mt-4 flex flex-wrap gap-1.5">
               {socialNav.map((item) => (
                 <a
                   key={item.id}
                   href={item.href}
                   target="_blank"
                   rel="noreferrer"
+                  className="chip"
                 >
                   {item.label}
                 </a>

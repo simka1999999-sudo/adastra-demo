@@ -45,7 +45,7 @@ export function ProductCard({ product }: { product: Product }) {
             </h3>
           </div>
           <div className="shrink-0 text-right">
-            <p className="text-sm font-semibold tabular-nums">
+            <p className="text-base font-semibold tabular-nums">
               {formatPrice(product.price)}
             </p>
             {product.oldPrice ? (

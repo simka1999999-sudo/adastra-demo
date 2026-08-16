@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartForm } from "@/components/catalog/AddToCartForm";
 import { CategoryView } from "@/components/catalog/CategoryView";
 import { ProductGallery } from "@/components/catalog/ProductGallery";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { ProductTrust } from "@/components/catalog/ProductTrust";
+import { ChipLink } from "@/components/ui/Chip";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ProductViewTracker } from "@/components/seo/ProductViewTracker";
 import { JsonLd } from "@/components/JsonLd";
@@ -130,18 +130,15 @@ export default async function CatalogSlugPage({ params }: Props) {
           {colorSiblings.length ? (
             <div className="mt-6">
               <p className="label">В этой линейке</p>
-              <ul className="mt-2 flex flex-wrap gap-2 text-sm">
-                <li className="border border-ink px-3 py-1.5">
-                  {product.shortTitle}
+              <ul className="mt-2 flex flex-wrap gap-1.5">
+                <li>
+                  <span className="chip chip-active">{product.shortTitle}</span>
                 </li>
                 {colorSiblings.map((sibling) => (
                   <li key={sibling.id}>
-                    <Link
-                      href={`/catalog/${sibling.slug}`}
-                      className="block border border-line px-3 py-1.5 hover:border-ink"
-                    >
+                    <ChipLink href={`/catalog/${sibling.slug}`}>
                       {sibling.shortTitle}
-                    </Link>
+                    </ChipLink>
                   </li>
                 ))}
               </ul>
@@ -189,30 +186,16 @@ export default async function CatalogSlugPage({ params }: Props) {
               <li key={f}>— {f}</li>
             ))}
           </ul>
-          <p className="mt-8 text-sm">
-            <Link href="/size-guide" className="underline underline-offset-4">
-              Как выбрать размер
-            </Link>
-            {" · "}
-            <Link href="/delivery" className="underline underline-offset-4">
-              Доставка и оплата
-            </Link>
-            {" · "}
-            <Link href="/returns" className="underline underline-offset-4">
-              Возврат
-            </Link>
+          <div className="mt-8 flex flex-wrap gap-1.5">
+            <ChipLink href="/size-guide">Как выбрать размер</ChipLink>
+            <ChipLink href="/delivery">Доставка и оплата</ChipLink>
+            <ChipLink href="/returns">Возврат</ChipLink>
             {cat ? (
-              <>
-                {" · "}
-                <Link
-                  href={getCategoryPath(product.category)}
-                  className="underline underline-offset-4"
-                >
-                  Все {cat.label.toLowerCase()}
-                </Link>
-              </>
+              <ChipLink href={getCategoryPath(product.category)}>
+                Все {cat.label.toLowerCase()}
+              </ChipLink>
             ) : null}
-          </p>
+          </div>
         </div>
       </div>
 

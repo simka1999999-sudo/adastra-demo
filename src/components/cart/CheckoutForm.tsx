@@ -143,23 +143,46 @@ export function CheckoutForm() {
   return (
     <form onSubmit={onSubmit} className="grid gap-10 lg:grid-cols-[1fr_340px]">
       <div className="space-y-5">
-        <div>
-          <label className="label" htmlFor="name">
-            ФИО
-          </label>
-          <input id="name" name="name" className="field" required />
-        </div>
-        <div>
-          <label className="label" htmlFor="phone">
-            Телефон
-          </label>
-          <input id="phone" name="phone" type="tel" className="field" required />
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label className="label" htmlFor="name">
+              ФИО
+            </label>
+            <input
+              id="name"
+              name="name"
+              className="field"
+              autoComplete="name"
+              required
+            />
+          </div>
+          <div>
+            <label className="label" htmlFor="phone">
+              Телефон
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              inputMode="tel"
+              className="field"
+              autoComplete="tel"
+              required
+            />
+          </div>
         </div>
         <div>
           <label className="label" htmlFor="email">
             Почта
           </label>
-          <input id="email" name="email" type="email" className="field" required />
+          <input
+            id="email"
+            name="email"
+            type="email"
+            className="field"
+            autoComplete="email"
+            required
+          />
         </div>
         <div>
           <label className="label" htmlFor="city">
@@ -172,6 +195,7 @@ export function CheckoutForm() {
             value={city}
             onChange={(e) => setCity(e.target.value)}
             placeholder="Москва"
+            autoComplete="address-level2"
             required
           />
         </div>
@@ -179,18 +203,24 @@ export function CheckoutForm() {
           <label className="label" htmlFor="address">
             Адрес / ПВЗ
           </label>
-          <input id="address" name="address" className="field" required />
+          <input
+            id="address"
+            name="address"
+            className="field"
+            autoComplete="street-address"
+            required
+          />
         </div>
         <div>
           <label className="label" htmlFor="comment">
-            Комментарий
+            Комментарий <span className="font-normal normal-case tracking-normal">(необязательно)</span>
           </label>
           <textarea id="comment" name="comment" className="field min-h-28" />
         </div>
 
-        <fieldset className="space-y-3">
+        <fieldset className="space-y-2">
           <legend className="label">Доставка</legend>
-          <label className="flex items-center gap-2 text-sm">
+          <label className="choice">
             <input
               type="radio"
               name="deliveryType"
@@ -198,9 +228,14 @@ export function CheckoutForm() {
               checked={carrier === "cdek"}
               onChange={() => setCarrier("cdek")}
             />
-            СДЭК — ПВЗ / курьер
+            <span>
+              <span className="block font-medium">СДЭК</span>
+              <span className="mt-0.5 block text-sm text-ink-muted">
+                ПВЗ или курьер
+              </span>
+            </span>
           </label>
-          <label className="flex items-center gap-2 text-sm">
+          <label className="choice">
             <input
               type="radio"
               name="deliveryType"
@@ -208,12 +243,17 @@ export function CheckoutForm() {
               checked={carrier === "ozon"}
               onChange={() => setCarrier("ozon")}
             />
-            Ozon Доставка
+            <span>
+              <span className="block font-medium">Ozon Доставка</span>
+              <span className="mt-0.5 block text-sm text-ink-muted">
+                Пункты выдачи Ozon
+              </span>
+            </span>
           </label>
           {quoteLoading ? (
-            <p className="text-xs text-ink-muted">Считаем доставку…</p>
+            <p className="text-sm text-ink-muted">Считаем доставку…</p>
           ) : quote ? (
-            <p className="text-xs text-ink-muted">
+            <p className="text-sm text-ink-muted">
               {quote.label}: {formatPrice(quote.price)} · {quote.daysMin}–
               {quote.daysMax} дн.
               {quote.note ? ` (${quote.note})` : ""}
@@ -221,21 +261,33 @@ export function CheckoutForm() {
           ) : null}
         </fieldset>
 
-        <fieldset className="space-y-3">
+        <fieldset className="space-y-2">
           <legend className="label">Оплата</legend>
-          <label className="flex items-center gap-2 text-sm">
+          <label className="choice">
             <input type="radio" name="paymentOption" value="cod" defaultChecked />
-            Оплата при получении
+            <span>
+              <span className="block font-medium">При получении</span>
+              <span className="mt-0.5 block text-sm text-ink-muted">
+                Наличными или картой в ПВЗ
+              </span>
+            </span>
           </label>
-          <label className="flex items-center gap-2 text-sm">
+          <label className="choice">
             <input type="radio" name="paymentOption" value="online" />
-            Оплата онлайн (ЮKassa)
+            <span>
+              <span className="block font-medium">Онлайн</span>
+              <span className="mt-0.5 block text-sm text-ink-muted">
+                ЮKassa на следующем шаге
+              </span>
+            </span>
           </label>
         </fieldset>
 
-        <label className="flex items-start gap-2 text-sm text-ink-muted">
-          <input type="checkbox" name="createAccount" className="mt-1" defaultChecked />
-          Сохранить мои данные (регистрация покупателя)
+        <label className="choice items-center">
+          <input type="checkbox" name="createAccount" className="mt-0.5" />
+          <span className="text-sm">
+            Сохранить данные для следующих заказов
+          </span>
         </label>
 
         {siteConfig.isStaticDemo ? (
@@ -266,7 +318,7 @@ export function CheckoutForm() {
         {error ? <p className="text-sm text-danger">{error}</p> : null}
       </div>
 
-      <aside className="h-fit border border-line bg-bg-elevated p-6">
+      <aside className="h-fit border border-line bg-bg-elevated p-6 lg:sticky lg:top-[calc(var(--header-h)+1rem)]">
         <p className="text-[0.72rem] tracking-[0.14em] uppercase text-ink-muted">
           Итого
         </p>

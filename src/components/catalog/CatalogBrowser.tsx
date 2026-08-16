@@ -9,6 +9,15 @@ import { categories, getCategoryPath } from "@/lib/categories";
 import { applyFacets } from "@/lib/products";
 import type { Product } from "@/lib/types";
 
+function pluralGoods(n: number) {
+  const abs = Math.abs(n) % 100;
+  const last = abs % 10;
+  if (abs > 10 && abs < 20) return "товаров";
+  if (last === 1) return "товар";
+  if (last >= 2 && last <= 4) return "товара";
+  return "товаров";
+}
+
 type FilterCurrent = ComponentProps<typeof CatalogFilters>["current"];
 
 type Props = {
@@ -49,7 +58,11 @@ function CatalogResults({
         basePath={basePath}
       />
       <div>
-        <p className="mb-4 text-sm text-ink-muted">Найдено: {list.length}</p>
+        <p className="mb-4 text-sm text-ink-muted">
+          {list.length
+            ? `${list.length} ${pluralGoods(list.length)}`
+            : "Нет товаров по фильтрам"}
+        </p>
         {list.length ? (
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
             {list.map((product) => (

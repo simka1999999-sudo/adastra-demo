@@ -1,5 +1,4 @@
-import Link from "next/link";
-import type { ReactNode } from "react";
+import { ChipLink } from "@/components/ui/Chip";
 import { getCategoryPath } from "@/lib/categories";
 import { getFilterOptions } from "@/lib/products";
 import type { Product } from "@/lib/types";
@@ -53,30 +52,6 @@ function buildHref(
   return qs ? `${basePath}?${qs}` : basePath;
 }
 
-function Chip({
-  href,
-  active,
-  children,
-}: {
-  href: string;
-  active: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      aria-current={active ? "true" : undefined}
-      className={`inline-flex items-center gap-1.5 border px-2.5 py-1.5 text-[0.8rem] leading-none transition-colors ${
-        active
-          ? "border-ink bg-ink text-white"
-          : "border-line text-ink hover:border-ink"
-      }`}
-    >
-      {children}
-    </Link>
-  );
-}
-
 function ColorDot({ name }: { name: string }) {
   const fill = COLOR_SWATCH[name.toLowerCase()] || "#9aa3ad";
   return (
@@ -92,45 +67,35 @@ function titleCase(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
-export function CatalogFilters({ current, basePath }: Props) {
+function FilterGroups({ current, path }: { current: Props["current"]; path: string }) {
   const { categories, colors, sizes, collections } = getFilterOptions({
     category: current.category,
     audience: current.audience,
   });
-  const path =
-    basePath ||
-    (current.category
-      ? getCategoryPath(current.category as Product["category"])
-      : "/catalog");
   const hasFacet = Boolean(
     current.color || current.size || current.sort || current.collection,
   );
 
   return (
-    <aside className="space-y-5 rounded-sm border border-line bg-bg-elevated/70 p-4 md:sticky md:top-[calc(var(--header-h)+1rem)] md:self-start md:border-0 md:bg-transparent md:p-0">
+    <div className="space-y-5">
       {hasFacet ? (
-        <Link
-          href={path}
-          className="text-[0.75rem] font-semibold tracking-[0.08em] uppercase text-ink-muted hover:text-ink"
-        >
-          Сбросить фильтры
-        </Link>
+        <ChipLink href={path}>Сбросить</ChipLink>
       ) : null}
 
       <div>
         <p className="label">Категория</p>
         <div className="flex flex-wrap gap-1.5">
-          <Chip href="/catalog" active={!current.category}>
+          <ChipLink href="/catalog" active={!current.category}>
             Все
-          </Chip>
+          </ChipLink>
           {categories.map((c) => (
-            <Chip
+            <ChipLink
               key={c.id}
               href={getCategoryPath(c.id as Product["category"])}
               active={current.category === c.id}
             >
               {c.label}
-            </Chip>
+            </ChipLink>
           ))}
         </div>
       </div>
@@ -138,21 +103,21 @@ export function CatalogFilters({ current, basePath }: Props) {
       <div>
         <p className="label">Цвет</p>
         <div className="flex flex-wrap gap-1.5">
-          <Chip
+          <ChipLink
             href={buildHref(path, current, { color: undefined })}
             active={!current.color}
           >
             Любой
-          </Chip>
+          </ChipLink>
           {colors.map((color) => (
-            <Chip
+            <ChipLink
               key={color}
               href={buildHref(path, current, { color })}
               active={current.color === color}
             >
               <ColorDot name={color} />
               {titleCase(color)}
-            </Chip>
+            </ChipLink>
           ))}
         </div>
       </div>
@@ -161,20 +126,20 @@ export function CatalogFilters({ current, basePath }: Props) {
         <div>
           <p className="label">Коллекция</p>
           <div className="flex flex-wrap gap-1.5">
-            <Chip
+            <ChipLink
               href={buildHref(path, current, { collection: undefined })}
               active={!current.collection}
             >
               Все
-            </Chip>
+            </ChipLink>
             {collections.map((collection) => (
-              <Chip
+              <ChipLink
                 key={collection}
                 href={buildHref(path, current, { collection })}
                 active={current.collection === collection}
               >
                 {collection.replace(" коллекция", "")}
-              </Chip>
+              </ChipLink>
             ))}
           </div>
         </div>
@@ -183,20 +148,20 @@ export function CatalogFilters({ current, basePath }: Props) {
       <div>
         <p className="label">Рост</p>
         <div className="flex flex-wrap gap-1.5">
-          <Chip
+          <ChipLink
             href={buildHref(path, current, { size: undefined })}
             active={!current.size}
           >
             Любой
-          </Chip>
+          </ChipLink>
           {sizes.map((s) => (
-            <Chip
+            <ChipLink
               key={s.id}
               href={buildHref(path, current, { size: s.id })}
               active={current.size === s.id}
             >
               {s.label}
-            </Chip>
+            </ChipLink>
           ))}
         </div>
       </div>
@@ -209,16 +174,41 @@ export function CatalogFilters({ current, basePath }: Props) {
             { id: "price_asc", label: "Дешевле" },
             { id: "price_desc", label: "Дороже" },
           ].map((s) => (
-            <Chip
+            <ChipLink
               key={s.label}
               href={buildHref(path, current, { sort: s.id })}
               active={current.sort === s.id || (!current.sort && !s.id)}
             >
               {s.label}
-            </Chip>
+            </ChipLink>
           ))}
         </div>
       </div>
-    </aside>
+    </div>
+  );
+}
+
+export function CatalogFilters({ current, basePath }: Props) {
+  const path =
+    basePath ||
+    (current.category
+      ? getCategoryPath(current.category as Product["category"])
+      : "/catalog");
+  const bodyProps = { current, path };
+
+  return (
+    <>
+      <details className="rounded-sm border border-line bg-bg-elevated/70 p-4 md:hidden">
+        <summary className="flex min-h-10 cursor-pointer list-none items-center text-sm font-semibold">
+          Фильтры
+        </summary>
+        <div className="mt-4">
+          <FilterGroups {...bodyProps} />
+        </div>
+      </details>
+      <aside className="hidden md:sticky md:top-[calc(var(--header-h)+1rem)] md:block md:self-start">
+        <FilterGroups {...bodyProps} />
+      </aside>
+    </>
   );
 }

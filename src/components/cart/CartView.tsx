@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/components/cart/CartProvider";
+import { QtyStepper } from "@/components/ui/QtyStepper";
 import { formatPrice } from "@/lib/products";
 
 export function CartView() {
@@ -16,6 +17,10 @@ export function CartView() {
     return (
       <div>
         <p className="text-lg">Корзина пуста</p>
+        <p className="mt-2 max-w-md text-sm text-ink-muted">
+          Добавьте комбинезон или другую модель из каталога — оформить заказ
+          можно без регистрации.
+        </p>
         <Link href="/catalog" className="btn mt-6 inline-flex">
           Перейти в каталог
         </Link>
@@ -31,33 +36,24 @@ export function CartView() {
             key={`${item.productId}-${item.sizeId}`}
             className="grid grid-cols-[96px_1fr] gap-4 border border-line bg-bg-elevated p-3 sm:grid-cols-[120px_1fr_auto]"
           >
-            <div className="relative aspect-[3/4] overflow-hidden bg-line/40">
+            <Link href={`/catalog/${item.slug}`} className="relative aspect-[3/4] overflow-hidden bg-line/40">
               <Image src={item.image} alt="" fill className="object-cover" sizes="120px" />
-            </div>
+            </Link>
             <div>
-              <Link href={`/catalog/${item.slug}`} className="font-medium">
+              <Link href={`/catalog/${item.slug}`} className="font-medium underline-offset-4 hover:underline">
                 {item.title}
               </Link>
               <p className="mt-1 text-sm text-ink-muted">{item.sizeLabel}</p>
               <p className="mt-2 text-sm">{formatPrice(item.price)}</p>
-              <div className="mt-3 flex items-center gap-3">
-                <label className="sr-only" htmlFor={`qty-${item.productId}-${item.sizeId}`}>
-                  Количество
-                </label>
-                <input
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <QtyStepper
                   id={`qty-${item.productId}-${item.sizeId}`}
-                  type="number"
-                  min={1}
-                  max={10}
-                  className="field max-w-20"
                   value={item.quantity}
-                  onChange={(e) =>
-                    setQuantity(item.productId, item.sizeId, Number(e.target.value) || 1)
-                  }
+                  onChange={(n) => setQuantity(item.productId, item.sizeId, n)}
                 />
                 <button
                   type="button"
-                  className="text-sm text-ink-muted underline underline-offset-4"
+                  className="min-h-10 text-sm underline underline-offset-4 text-ink-muted hover:text-ink"
                   onClick={() => removeItem(item.productId, item.sizeId)}
                 >
                   Удалить
@@ -65,21 +61,22 @@ export function CartView() {
               </div>
             </div>
             <div className="hidden text-right sm:block">
-              <p>{formatPrice(item.price * item.quantity)}</p>
+              <p className="font-semibold tabular-nums">
+                {formatPrice(item.price * item.quantity)}
+              </p>
             </div>
           </div>
         ))}
       </div>
 
-      <aside className="h-fit border border-line bg-bg-elevated p-6">
+      <aside className="h-fit border border-line bg-bg-elevated p-6 lg:sticky lg:top-[calc(var(--header-h)+1rem)]">
         <p className="text-[0.72rem] tracking-[0.14em] uppercase text-ink-muted">Итого</p>
-        <p className="mt-2 text-3xl">{formatPrice(total)}</p>
+        <p className="mt-2 text-3xl font-semibold tracking-tight">{formatPrice(total)}</p>
         <Link href="/checkout" className="btn mt-6 w-full">
           Оформить заказ
         </Link>
         <p className="mt-4 text-xs leading-relaxed text-ink-muted">
-          Доставка по Москве с примеркой или по России в ПВЗ / курьером. Подробности на странице
-          доставки.
+          Доставка по Москве с примеркой или по России в ПВЗ / курьером.
         </p>
       </aside>
     </div>

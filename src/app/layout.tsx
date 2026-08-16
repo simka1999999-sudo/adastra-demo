@@ -44,9 +44,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ru" className={`${jost.variable} h-full`}>
       <body className={`${jost.className} flex min-h-full flex-col antialiased`}>
+        <a href="#content" className="skip-link">
+          К содержанию
+        </a>
         <CartProvider>
           <Header />
-          <main className="flex-1 pt-[var(--header-h)]">{children}</main>
+          <main id="content" className="flex-1 pt-[var(--header-h)]">
+            {children}
+          </main>
           <Footer />
         </CartProvider>
         <YandexMetrika />

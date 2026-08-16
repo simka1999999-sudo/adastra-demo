@@ -68,25 +68,51 @@ export function RegisterForm() {
         <label className="label" htmlFor="name">
           Имя
         </label>
-        <input id="name" name="name" className="field" required />
+        <input
+          id="name"
+          name="name"
+          className="field"
+          autoComplete="name"
+          required
+        />
       </div>
       <div>
         <label className="label" htmlFor="phone">
           Телефон
         </label>
-        <input id="phone" name="phone" type="tel" className="field" required />
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          className="field"
+          autoComplete="tel"
+          required
+        />
       </div>
       <div>
         <label className="label" htmlFor="email">
           Email
         </label>
-        <input id="email" name="email" type="email" className="field" required />
+        <input
+          id="email"
+          name="email"
+          type="email"
+          className="field"
+          autoComplete="email"
+          required
+        />
       </div>
       <div>
         <label className="label" htmlFor="city">
           Город
         </label>
-        <input id="city" name="city" className="field" />
+        <input
+          id="city"
+          name="city"
+          className="field"
+          autoComplete="address-level2"
+        />
       </div>
       <label className="flex items-start gap-2 text-sm text-ink-muted">
         <input type="checkbox" name="marketing" className="mt-1" />

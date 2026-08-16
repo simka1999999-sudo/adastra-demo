@@ -9,14 +9,14 @@ const items = [
 
 export function ProductTrust() {
   return (
-    <ul className="mt-8 grid grid-cols-2 gap-3 border-t border-line pt-6 text-sm sm:grid-cols-4">
+    <ul className="mt-8 grid grid-cols-2 gap-2 border-t border-line pt-6 sm:grid-cols-4 sm:gap-3">
       {items.map((item) => (
         <li key={item.label}>
-          <Link href={item.href} className="block hover:text-ink">
+          <Link href={item.href} className="choice h-full min-h-0 flex-col gap-1">
             <p className="text-[0.62rem] font-semibold tracking-[0.12em] uppercase text-ink-muted">
               {item.hint}
             </p>
-            <p className="mt-1 leading-snug">{item.label}</p>
+            <p className="text-sm leading-snug">{item.label}</p>
           </Link>
         </li>
       ))}

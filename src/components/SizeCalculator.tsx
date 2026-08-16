@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 
 type SizeRow = {
   id: string;
@@ -125,6 +126,7 @@ export function SizeCalculator() {
               id={f.id}
               className="field"
               type="number"
+              inputMode="numeric"
               min={40}
               max={220}
               value={f.value}
@@ -146,6 +148,11 @@ export function SizeCalculator() {
             {result.score === 0
               ? "Параметры точно попадают в размерную сетку."
               : "Ближайший размер по вашим меркам. При сомнении напишите нам — уточним до заказа."}
+          </p>
+          <p className="mt-4">
+            <Link href="/catalog/kombinezony" className="chip">
+              Смотреть комбинезоны
+            </Link>
           </p>
         </div>
       ) : (

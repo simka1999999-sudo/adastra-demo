@@ -117,11 +117,8 @@ export default function HomePage() {
           ))}
         </div>
         <p className="mt-10">
-          <Link
-            href="/catalog/kombinezony"
-            className="text-[0.7rem] font-semibold tracking-[0.16em] uppercase text-ink-muted hover:text-ink"
-          >
-            Все комбинезоны →
+          <Link href="/catalog/kombinezony" className="btn btn-ghost">
+            Все комбинезоны
           </Link>
         </p>
       </section>
@@ -129,7 +126,7 @@ export default function HomePage() {
       <section className="border-y border-line py-16 md:py-24">
         <div className="container-page">
           <Reveal>
-            <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="mb-10">
               <div>
                 <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
                   Ozon
@@ -143,12 +140,11 @@ export default function HomePage() {
                   отзывов
                 </p>
               </div>
-              <Link
-                href="/reviews"
-                className="text-[0.7rem] font-semibold tracking-[0.16em] uppercase text-ink-muted hover:text-ink"
-              >
-                Все отзывы →
-              </Link>
+              <p className="mt-6">
+                <Link href="/reviews" className="chip">
+                  Все отзывы
+                </Link>
+              </p>
             </div>
           </Reveal>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -184,24 +180,26 @@ export default function HomePage() {
 
       <section className="container-page py-16 md:py-24">
         <Reveal>
-          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
-                Instagram
+            <div className="mb-8">
+              <div>
+                <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
+                  Instagram
+                </p>
+                <h2 className="display mt-3 text-[clamp(1.8rem,3.5vw,2.8rem)] tracking-[-0.04em]">
+                  @{instagramHandle}
+                </h2>
+              </div>
+              <p className="mt-6">
+                <a
+                  href={siteConfig.social.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="chip"
+                >
+                  Открыть профиль
+                </a>
               </p>
-              <h2 className="display mt-3 text-[clamp(1.8rem,3.5vw,2.8rem)] tracking-[-0.04em]">
-                @{instagramHandle}
-              </h2>
             </div>
-            <a
-              href={siteConfig.social.instagram}
-              target="_blank"
-              rel="noreferrer"
-              className="text-[0.7rem] font-semibold tracking-[0.16em] uppercase"
-            >
-              Открыть профиль →
-            </a>
-          </div>
         </Reveal>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           {instagramPosts.map((post) => (
