@@ -56,7 +56,7 @@ export function Header() {
             >
               Меню
             </button>
-            <Link href="/" className="relative block h-8 w-48 sm:h-10 sm:w-56 md:h-11 md:w-64">
+            <Link href="/" className="relative block h-10 w-56 sm:h-11 sm:w-64 md:h-12 md:w-72">
               <Image
                 src={
                   solid
@@ -66,7 +66,7 @@ export function Header() {
                 alt="ADASTRA"
                 fill
                 className="object-contain object-left"
-                sizes="(max-width: 640px) 192px, 256px"
+                sizes="(max-width: 640px) 224px, 288px"
                 priority
               />
             </Link>
@@ -125,13 +125,13 @@ export function Header() {
           }`}
         >
           <div className="flex items-center justify-between border-b border-line px-6 py-5">
-            <span className="relative block h-8 w-48">
+            <span className="relative block h-10 w-56">
               <Image
                 src="/brand/logo-wordmark-dark.png"
                 alt="ADASTRA"
                 fill
                 className="object-contain object-left"
-                sizes="192px"
+                sizes="224px"
               />
             </span>
             <button

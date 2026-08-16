@@ -8,13 +8,13 @@ export function Footer() {
     <footer className="mt-auto border-t border-line bg-ink text-white">
       <div className="container-page grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
-          <div className="relative h-8 w-44">
+          <div className="relative h-10 w-56">
             <Image
               src="/brand/logo-wordmark-light.png"
               alt="ADASTRA"
               fill
               className="object-contain object-left"
-              sizes="176px"
+              sizes="224px"
             />
           </div>
           <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/65">
