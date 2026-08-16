@@ -37,7 +37,7 @@ function CatalogResults({
   const list = applyFacets(products, facets);
 
   return (
-    <div className="grid gap-10 lg:grid-cols-[220px_1fr]">
+    <div className="grid gap-6 md:grid-cols-[220px_1fr] md:items-start md:gap-8 lg:grid-cols-[240px_1fr] lg:gap-10">
       <CatalogFilters
         current={{
           ...filterCurrent,

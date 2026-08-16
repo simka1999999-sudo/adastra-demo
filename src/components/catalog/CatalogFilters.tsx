@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { getCategoryPath } from "@/lib/categories";
 import { getFilterOptions } from "@/lib/products";
 import type { Product } from "@/lib/types";
@@ -16,26 +17,79 @@ type Props = {
   basePath?: string;
 };
 
+const COLOR_SWATCH: Record<string, string> = {
+  бежевый: "#d4c4a8",
+  бирюзовый: "#3f9e9a",
+  бордовый: "#6b1d2a",
+  зеленый: "#4f6b3a",
+  красный: "#b4232c",
+  разноцветный:
+    "conic-gradient(from 90deg,#c45c5c,#d4c4a8,#3f9e9a,#2c4a7c,#5b3d8f,#c45c5c)",
+  розовый: "#e8a0b4",
+  серый: "#8a8f96",
+  синий: "#2c4a7c",
+  фиолетовый: "#5b3d8f",
+  хаки: "#6b6340",
+  черный: "#0b0d10",
+};
+
 function buildHref(
   basePath: string,
   current: Props["current"],
   patch: Partial<Props["current"]>,
 ) {
   const next = { ...current, ...patch };
-  // Смена категории → ЧПУ категории (без ?category=)
   if (patch.category !== undefined) {
     if (!patch.category) return "/catalog";
     return getCategoryPath(patch.category as Product["category"]);
   }
 
   const params = new URLSearchParams();
-  // на хабе /catalog можно оставить переход на ЧПУ; color/size/sort — query
   if (next.color) params.set("color", next.color);
   if (next.size) params.set("size", next.size);
   if (next.sort) params.set("sort", next.sort);
   if (next.collection) params.set("collection", next.collection);
   const qs = params.toString();
   return qs ? `${basePath}?${qs}` : basePath;
+}
+
+function Chip({
+  href,
+  active,
+  children,
+}: {
+  href: string;
+  active: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      aria-current={active ? "true" : undefined}
+      className={`inline-flex items-center gap-1.5 border px-2.5 py-1.5 text-[0.8rem] leading-none transition-colors ${
+        active
+          ? "border-ink bg-ink text-white"
+          : "border-line text-ink hover:border-ink"
+      }`}
+    >
+      {children}
+    </Link>
+  );
+}
+
+function ColorDot({ name }: { name: string }) {
+  const fill = COLOR_SWATCH[name.toLowerCase()] || "#9aa3ad";
+  return (
+    <span
+      aria-hidden
+      className="size-3.5 shrink-0 rounded-full border border-black/20"
+      style={{ background: fill }}
+    />
+  );
+}
+
+function titleCase(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 export function CatalogFilters({ current, basePath }: Props) {
@@ -48,131 +102,122 @@ export function CatalogFilters({ current, basePath }: Props) {
     (current.category
       ? getCategoryPath(current.category as Product["category"])
       : "/catalog");
+  const hasFacet = Boolean(
+    current.color || current.size || current.sort || current.collection,
+  );
 
   return (
-    <aside className="space-y-8">
+    <aside className="space-y-5 rounded-sm border border-line bg-bg-elevated/70 p-4 md:sticky md:top-[calc(var(--header-h)+1rem)] md:self-start md:border-0 md:bg-transparent md:p-0">
+      {hasFacet ? (
+        <Link
+          href={path}
+          className="text-[0.75rem] font-semibold tracking-[0.08em] uppercase text-ink-muted hover:text-ink"
+        >
+          Сбросить фильтры
+        </Link>
+      ) : null}
+
       <div>
         <p className="label">Категория</p>
-        <ul className="space-y-2 text-sm">
-          <li>
-            <Link
-              href="/catalog"
-              className={!current.category ? "text-ink" : "text-ink-muted"}
-            >
-              Все
-            </Link>
-          </li>
+        <div className="flex flex-wrap gap-1.5">
+          <Chip href="/catalog" active={!current.category}>
+            Все
+          </Chip>
           {categories.map((c) => (
-            <li key={c.id}>
-              <Link
-                href={getCategoryPath(c.id as Product["category"])}
-                className={current.category === c.id ? "text-ink" : "text-ink-muted"}
-              >
-                {c.label}
-              </Link>
-            </li>
+            <Chip
+              key={c.id}
+              href={getCategoryPath(c.id as Product["category"])}
+              active={current.category === c.id}
+            >
+              {c.label}
+            </Chip>
           ))}
-        </ul>
+        </div>
       </div>
 
       <div>
         <p className="label">Цвет</p>
-        <ul className="space-y-2 text-sm">
-          <li>
-            <Link
-              href={buildHref(path, current, { color: undefined })}
-              className={!current.color ? "text-ink" : "text-ink-muted"}
-            >
-              Любой
-            </Link>
-          </li>
+        <div className="flex flex-wrap gap-1.5">
+          <Chip
+            href={buildHref(path, current, { color: undefined })}
+            active={!current.color}
+          >
+            Любой
+          </Chip>
           {colors.map((color) => (
-            <li key={color}>
-              <Link
-                href={buildHref(path, current, { color })}
-                className={current.color === color ? "text-ink" : "text-ink-muted"}
-              >
-                {color}
-              </Link>
-            </li>
+            <Chip
+              key={color}
+              href={buildHref(path, current, { color })}
+              active={current.color === color}
+            >
+              <ColorDot name={color} />
+              {titleCase(color)}
+            </Chip>
           ))}
-        </ul>
+        </div>
       </div>
 
       {collections.length > 1 ? (
         <div>
           <p className="label">Коллекция</p>
-          <ul className="space-y-2 text-sm">
-            <li>
-              <Link
-                href={buildHref(path, current, { collection: undefined })}
-                className={!current.collection ? "text-ink" : "text-ink-muted"}
-              >
-                Все
-              </Link>
-            </li>
+          <div className="flex flex-wrap gap-1.5">
+            <Chip
+              href={buildHref(path, current, { collection: undefined })}
+              active={!current.collection}
+            >
+              Все
+            </Chip>
             {collections.map((collection) => (
-              <li key={collection}>
-                <Link
-                  href={buildHref(path, current, { collection })}
-                  className={
-                    current.collection === collection ? "text-ink" : "text-ink-muted"
-                  }
-                >
-                  {collection.replace(" коллекция", "")}
-                </Link>
-              </li>
+              <Chip
+                key={collection}
+                href={buildHref(path, current, { collection })}
+                active={current.collection === collection}
+              >
+                {collection.replace(" коллекция", "")}
+              </Chip>
             ))}
-          </ul>
+          </div>
         </div>
       ) : null}
 
       <div>
         <p className="label">Рост</p>
-        <ul className="space-y-2 text-sm">
-          <li>
-            <Link
-              href={buildHref(path, current, { size: undefined })}
-              className={!current.size ? "text-ink" : "text-ink-muted"}
-            >
-              Любой
-            </Link>
-          </li>
+        <div className="flex flex-wrap gap-1.5">
+          <Chip
+            href={buildHref(path, current, { size: undefined })}
+            active={!current.size}
+          >
+            Любой
+          </Chip>
           {sizes.map((s) => (
-            <li key={s.id}>
-              <Link
-                href={buildHref(path, current, { size: s.id })}
-                className={current.size === s.id ? "text-ink" : "text-ink-muted"}
-              >
-                {s.label}
-              </Link>
-            </li>
+            <Chip
+              key={s.id}
+              href={buildHref(path, current, { size: s.id })}
+              active={current.size === s.id}
+            >
+              {s.label}
+            </Chip>
           ))}
-        </ul>
+        </div>
       </div>
 
       <div>
         <p className="label">Сортировка</p>
-        <ul className="space-y-2 text-sm">
+        <div className="flex flex-wrap gap-1.5">
           {[
-            { id: undefined, label: "По умолчанию" },
-            { id: "price_asc", label: "Цена ↑" },
-            { id: "price_desc", label: "Цена ↓" },
+            { id: undefined, label: "Популярные" },
+            { id: "price_asc", label: "Дешевле" },
+            { id: "price_desc", label: "Дороже" },
           ].map((s) => (
-            <li key={s.label}>
-              <Link
-                href={buildHref(path, current, { sort: s.id })}
-                className={
-                  current.sort === s.id || (!current.sort && !s.id)
-                    ? "text-ink"
-                    : "text-ink-muted"
-                }
-              >
-                {s.label}
-              </Link>
-            </li>
+            <Chip
+              key={s.label}
+              href={buildHref(path, current, { sort: s.id })}
+              active={current.sort === s.id || (!current.sort && !s.id)}
+            >
+              {s.label}
+            </Chip>
           ))}
-        </ul>
+        </div>
       </div>
     </aside>
   );
