@@ -39,7 +39,7 @@ export function Header() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-[var(--demo-banner-h)] z-50 transition-[background,border-color,backdrop-filter] duration-300 ${
+        className={`fixed inset-x-0 top-0 z-50 transition-[background,border-color,backdrop-filter] duration-300 ${
           solid
             ? "border-b border-line/90 bg-[color-mix(in_srgb,var(--bg)_88%,white)] backdrop-blur-xl"
             : "border-b border-transparent bg-transparent"

@@ -7,7 +7,6 @@ import { YandexMetrika } from "@/components/YandexMetrika";
 import { JsonLd } from "@/components/JsonLd";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
-import { DemoBanner } from "@/components/DemoBanner";
 import "./globals.css";
 
 /** Шрифт из бренд-пака дизайнера (DropMeFiles FPAZ8). Futura без кириллицы — не используем. */
@@ -43,13 +42,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="ru"
-      className={`${jost.variable} h-full ${siteConfig.allowIndexing ? "" : "demo-closed"}`}
-    >
+    <html lang="ru" className={`${jost.variable} h-full`}>
       <body className={`${jost.className} flex min-h-full flex-col antialiased`}>
         <CartProvider>
-          <DemoBanner />
           <Header />
           <main className="flex-1 pt-[var(--header-h)]">{children}</main>
           <Footer />
