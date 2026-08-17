@@ -2,7 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { DeleteProductButton } from "@/components/admin/DeleteProductButton";
+import { OzonPhotosForm } from "@/components/admin/OzonPhotosForm";
 import { readCatalog } from "@/lib/catalog-store";
+import { ozonSellerConfigured } from "@/lib/ozon-seller";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -21,6 +23,9 @@ export default async function EditProductPage({ params }: Props) {
         </Link>
       </p>
       <ProductForm product={product} />
+      <div className="mt-10">
+        <OzonPhotosForm productId={product.id} configured={ozonSellerConfigured()} />
+      </div>
       <div className="mt-10 border-t border-line pt-6">
         <DeleteProductButton id={product.id} title={product.shortTitle} />
       </div>

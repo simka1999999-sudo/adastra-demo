@@ -12,7 +12,7 @@ export function AdminBar() {
           Новый товар
         </Link>
         <Link href="/admin/import" className="underline-offset-4 hover:underline">
-          Excel
+          Excel / Ozon
         </Link>
         <Link href="/catalog" className="text-ink-muted underline-offset-4 hover:underline">
           Витрина

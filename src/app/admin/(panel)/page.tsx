@@ -18,7 +18,7 @@ export default function AdminProductsPage() {
       <p className="mb-6 text-sm text-ink-muted">
         {list.length} товаров · {needPhotos} без своих фото. Объём — через{" "}
         <Link href="/admin/import" className="underline underline-offset-4">
-          Excel
+          Excel и Ozon
         </Link>
         .
       </p>

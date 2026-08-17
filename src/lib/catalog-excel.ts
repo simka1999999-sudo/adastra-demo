@@ -6,7 +6,14 @@ import {
   toCatalogProduct,
   type ProductWrite,
 } from "@/lib/product-write";
-import { categoryLabels } from "@/lib/products";
+import { parseOzonId } from "@/lib/ozon-id";
+
+const CATEGORY_LABEL: Record<Product["category"], string> = {
+  overalls: "Комбинезоны",
+  jackets: "Куртки",
+  coats: "Пальто",
+  pants: "Брюки",
+};
 
 export type ExcelColumnKey =
   | "masterSku"
@@ -28,6 +35,7 @@ export type ExcelColumnKey =
   | "isHit"
   | "isNew"
   | "colorGroup"
+  | "ozonId"
   | "features";
 
 export const EXCEL_COLUMNS: { key: ExcelColumnKey; header: string }[] = [
@@ -50,6 +58,7 @@ export const EXCEL_COLUMNS: { key: ExcelColumnKey; header: string }[] = [
   { key: "isHit", header: "Хит" },
   { key: "isNew", header: "Новинка" },
   { key: "colorGroup", header: "Линейка" },
+  { key: "ozonId", header: "Ozon ID" },
   { key: "features", header: "Особенности" },
 ];
 
@@ -96,6 +105,14 @@ const HEADER_ALIASES: Record<string, ExcelColumnKey> = {
   isnew: "isNew",
   линейка: "colorGroup",
   colorgroup: "colorGroup",
+  "ozon id": "ozonId",
+  ozonid: "ozonId",
+  "id ozon": "ozonId",
+  озон: "ozonId",
+  "озон id": "ozonId",
+  "ссылка озон": "ozonId",
+  "ссылка ozon": "ozonId",
+  "ozon url": "ozonId",
   особенности: "features",
   features: "features",
 };
@@ -171,7 +188,7 @@ function productToRow(product: Product): Record<ExcelColumnKey, string | number>
     masterSku: product.masterSku || product.id.replace(/^p-/, ""),
     shortTitle: product.shortTitle,
     color: product.colors[0] || "",
-    category: categoryLabels[product.category],
+    category: CATEGORY_LABEL[product.category],
     price: product.price,
     oldPrice: product.oldPrice || "",
     sizes: product.sizes.map((s) => s.label).join("; "),
@@ -187,6 +204,7 @@ function productToRow(product: Product): Record<ExcelColumnKey, string | number>
     isHit: yesNo(Boolean(product.isHit)),
     isNew: yesNo(Boolean(product.isNew)),
     colorGroup: product.colorGroup || "",
+    ozonId: product.ozonId || "",
     features: product.features.join("; "),
   };
 }
@@ -224,7 +242,8 @@ async function buildWorkbook(rows: Record<ExcelColumnKey, string | number>[]) {
     ["Описание и состав", "нет", "Пустые ячейки заполнятся заглушкой «Уточняется»."],
     ["В наличии / Хит / Новинка", "нет", "да или нет."],
     ["Особенности", "нет", "Через ; или с новой строки в ячейке."],
-    ["Фото", "—", "В Excel не входят. Загрузите на карточке товара в админке."],
+    ["Ozon ID", "нет", "Номер товара Ozon из ссылки или кабинета. По нему потом тянем фото."],
+    ["Фото", "—", "В Excel не входят. После загрузки нажмите «Подтянуть фото с Ozon»."],
   ]);
 
   return wb;
@@ -256,6 +275,7 @@ export async function catalogTemplateBuffer() {
     isHit: "да",
     isNew: "нет",
     colorGroup: "",
+    ozonId: 2045392461,
     features: "Мембрана 12 000 мм; Съёмный капюшон",
   };
   const wb = await buildWorkbook([example]);
@@ -414,7 +434,12 @@ export async function parseCatalogExcel(
           : base?.sizes || [],
         care: raw.care || base?.care || "",
         colorGroup: raw.colorGroup || base?.colorGroup || null,
-        ozonId: base?.ozonId ?? null,
+        ozonId:
+          parseOzonId(raw.ozonId || "") ??
+          parseOzonId(name) ??
+          parseOzonId(sku) ??
+          base?.ozonId ??
+          null,
         hitRank: base?.hitRank ?? null,
         inStock: parseBool(raw.inStock || "") ?? base?.inStock ?? true,
         isHit: parseBool(raw.isHit || "") ?? base?.isHit ?? false,

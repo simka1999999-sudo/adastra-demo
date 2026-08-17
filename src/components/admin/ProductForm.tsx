@@ -6,6 +6,7 @@ import type { Product } from "@/lib/types";
 import { buildProductTitle } from "@/lib/catalog-identity";
 import { isUploadedPhoto, productPhotoStatus } from "@/lib/products";
 import { DEFAULT_SIZE_LABELS } from "@/lib/catalog-defaults";
+import { parseOzonId } from "@/lib/ozon-id";
 import { withBasePath } from "@/lib/site";
 
 type Props = { product?: Product };
@@ -54,6 +55,7 @@ export function ProductForm({ product }: Props) {
       sizes: sizeLines.map((label) => ({ label, inStock: true })),
       care: String(form.get("care") || ""),
       colorGroup: String(form.get("colorGroup") || "") || null,
+      ozonId: parseOzonId(String(form.get("ozonId") || "")) ?? null,
       inStock: form.get("inStock") === "on",
       isHit: form.get("isHit") === "on",
       isNew: form.get("isNew") === "on",
@@ -227,6 +229,10 @@ export function ProductForm({ product }: Props) {
           <div>
             <label className="label" htmlFor="colorGroup">Линейка цветов (id)</label>
             <input id="colorGroup" name="colorGroup" className="field" defaultValue={product?.colorGroup ?? ""} />
+          </div>
+          <div>
+            <label className="label" htmlFor="ozonId">Ozon ID</label>
+            <input id="ozonId" name="ozonId" className="field" inputMode="numeric" defaultValue={product?.ozonId ?? ""} placeholder="2045392461" />
           </div>
         </div>
         <input type="hidden" name="season" defaultValue={product?.season ?? "Зима"} />
