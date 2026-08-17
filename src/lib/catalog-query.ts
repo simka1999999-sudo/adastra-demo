@@ -37,6 +37,13 @@ export function getFeaturedProducts(): Product[] {
   return list.filter((p) => p.featured && p.inStock).slice(0, 6);
 }
 
+export function getFromPrice(category?: Product["category"]) {
+  const prices = getAllProducts()
+    .filter((p) => p.inStock && (category ? p.category === category : true))
+    .map((p) => p.price);
+  return prices.length ? Math.min(...prices) : 0;
+}
+
 export function getColorSiblings(product: Product): Product[] {
   if (!product.colorGroup) return [];
   return getAllProducts().filter(

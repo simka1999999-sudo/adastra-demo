@@ -8,23 +8,27 @@ import { Reveal } from "@/components/Reveal";
 import { featuresCompact, useCases } from "../../content/home";
 import { instagramHandle, instagramPosts } from "../../content/instagram";
 import { ozonReviews, ozonReviewsMeta } from "../../content/reviews";
-import { getFeaturedProducts } from "@/lib/catalog-query";
+import { getFeaturedProducts, getFromPrice } from "@/lib/catalog-query";
 import { buildPageMetadata } from "@/lib/seo";
+import { formatPrice } from "@/lib/products";
 import { siteConfig } from "@/lib/site";
+
+const fromOveralls = getFromPrice("overalls");
 
 export const metadata: Metadata = buildPageMetadata({
   title: "ADASTRA — бренд утеплённой женской одежды",
-  description:
-    "ADASTRA — бренд утеплённых комбинезонов и верхней одежды до −30 °C. Город, поездки, горы и прогулки. Доставка СДЭК и Ozon.",
+  description: `Утеплённые комбинезоны ADASTRA до −30 °C, от ${formatPrice(fromOveralls)}. Город, поездки, горы и прогулки. Доставка СДЭК и Ozon по России.`,
   path: "/",
+  image: "/lookbook/hero-1.jpg",
 });
 
 export default function HomePage() {
   const featured = getFeaturedProducts();
+  const fromPrice = fromOveralls;
 
   return (
     <>
-      <HeroBanner />
+      <HeroBanner fromPrice={fromPrice} />
 
       <div className="marquee" aria-hidden>
         <div className="marquee-track">

@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { formatPrice } from "@/lib/products";
+import { formatPhoneDisplay, siteConfig } from "@/lib/site";
 
 const slides = [
   {
@@ -19,7 +21,7 @@ const slides = [
   },
 ];
 
-export function HeroBanner() {
+export function HeroBanner({ fromPrice }: { fromPrice: number }) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -57,11 +59,23 @@ export function HeroBanner() {
           Город, поездки, горы и прогулки с детьми — один комбинезон на разные
           сценарии зимы.
         </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/catalog/kombinezony" className="btn btn-light">
+        <p className="mt-5 text-xl font-semibold tabular-nums tracking-tight sm:text-2xl">
+          от {formatPrice(fromPrice)}
+        </p>
+        <p className="mt-1 text-sm text-white/75">
+          Доставка СДЭК и Ozon
+        </p>
+        <a
+          href={`tel:${siteConfig.phoneRaw}`}
+          className="mt-2 text-sm font-semibold underline decoration-white/40 underline-offset-4 md:hidden"
+        >
+          {formatPhoneDisplay()}
+        </a>
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Link href="/catalog/kombinezony" className="btn btn-light w-full sm:w-auto">
             Смотреть комбинезоны
           </Link>
-          <Link href="/size-guide" className="btn btn-ghost-light">
+          <Link href="/size-guide" className="btn btn-ghost-light w-full sm:w-auto">
             Подобрать размер
           </Link>
         </div>
