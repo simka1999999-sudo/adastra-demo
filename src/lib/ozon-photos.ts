@@ -3,6 +3,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Product } from "@/lib/types";
 import {
+  isOzonStorePhoto,
   productPhotoDir,
   readCatalog,
   removeStoredPhoto,
@@ -98,7 +99,10 @@ export async function pullOzonPhotos(options: {
     ? catalog.filter((p) => options.ids!.includes(p.id))
     : catalog;
   const need = targets.filter(
-    (p) => options.force || options.onlyMissing === false || !p.images.some(isRealProductPhoto),
+    (p) =>
+      options.force ||
+      options.onlyMissing === false ||
+      !p.images.some(isOzonStorePhoto),
   );
   const knownIds = need
     .map((p) => p.ozonId)
@@ -119,9 +123,9 @@ export async function pullOzonPhotos(options: {
       photos: 0,
       detail: "",
     };
-    const hasReal = product.images.some(isRealProductPhoto);
-    if (!options.force && options.onlyMissing !== false && hasReal) {
-      rows.push({ ...base, detail: "свои фото уже есть" });
+    const hasOzon = product.images.some(isOzonStorePhoto);
+    if (!options.force && options.onlyMissing !== false && hasOzon) {
+      rows.push({ ...base, detail: "фото с Ozon уже есть" });
       continue;
     }
     const offer = matchOzonOffer(product, offers);

@@ -61,14 +61,16 @@ function asUrls(value: unknown): string[] {
 
 function uniqueUrls(urls: string[]) {
   const seen = new Set<string>();
-  const out: string[] = [];
+  const durable: string[] = [];
+  const tmp: string[] = [];
   for (const url of urls) {
     const clean = url.split("?")[0];
     if (!clean.startsWith("http") || seen.has(clean)) continue;
     seen.add(clean);
-    out.push(url);
+    if (clean.includes("multimedia-tmp")) tmp.push(url);
+    else durable.push(url);
   }
-  return out;
+  return durable.length ? durable : tmp;
 }
 
 function num(value: unknown): number | null {
@@ -152,7 +154,9 @@ export async function fetchOzonOffers(productIds: number[]) {
 }
 
 async function fillMissingPictures(offers: OzonOffer[]) {
-  const missing = offers.filter((o) => !o.images.length);
+  const missing = offers.filter(
+    (o) => !o.images.length || o.images.every((url) => url.includes("multimedia-tmp")),
+  );
   if (!missing.length) return offers;
   const byId = new Map(offers.map((o) => [o.productId, o]));
   for (const group of chunk(missing.map((o) => o.productId), 100)) {
@@ -169,6 +173,7 @@ async function fillMissingPictures(offers: OzonOffer[]) {
         ...asUrls(item.photo),
         ...asUrls(item.color_photo),
         ...asUrls(item.photo_360),
+        ...offer.images,
       ]);
     }
   }
