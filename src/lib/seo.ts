@@ -75,8 +75,9 @@ export function catalogQueryFlags(sp: {
   sort?: string;
   category?: string;
   collection?: string;
+  q?: string;
 }) {
-  const hasFacet = Boolean(sp.color || sp.size || sp.sort || sp.collection);
+  const hasFacet = Boolean(sp.color || sp.size || sp.sort || sp.collection || sp.q);
   return {
     hasFacet,
     indexable: !hasFacet,

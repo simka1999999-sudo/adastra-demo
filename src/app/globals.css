@@ -13,8 +13,8 @@
   --ice: #e8eef4;
   --danger: #a33b3b;
   --success: #2f6b4f;
-  --nav-h: 5.25rem;
-  --header-h: 5.25rem;
+  --nav-h: 8.25rem;
+  --header-h: 8.25rem;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --font-body: var(--font-jost);
   --font-display: var(--font-jost);
@@ -377,7 +377,8 @@ summary::-webkit-details-marker {
 }
 
 .hero-media {
-  transform: scale(1.04);
+  transform: scale(1.02);
+  transform-origin: center top;
 }
 
 .hero-media.kenburns-active {
@@ -386,10 +387,10 @@ summary::-webkit-details-marker {
 
 @keyframes kenburns {
   from {
-    transform: scale(1.1);
+    transform: scale(1.04);
   }
   to {
-    transform: scale(1.02);
+    transform: scale(1.01);
   }
 }
 

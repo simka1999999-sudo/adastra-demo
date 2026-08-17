@@ -17,7 +17,7 @@ const fromOveralls = getFromPrice("overalls");
 
 export const metadata: Metadata = buildPageMetadata({
   title: "ADASTRA — бренд утеплённой женской одежды",
-  description: `Утеплённые комбинезоны ADASTRA до −30 °C, от ${formatPrice(fromOveralls)}. Город, поездки, горы и прогулки. Доставка СДЭК и Ozon по России.`,
+  description: `Утеплённые комбинезоны ADASTRA от −5 до −30 °C, от ${formatPrice(fromOveralls)}. Thinsulate, мембрана 12 000 мм. Доставка СДЭК и Ozon по России.`,
   path: "/",
   image: "/lookbook/hero-1.jpg",
 });
@@ -60,14 +60,25 @@ export default function HomePage() {
         <div className="mt-10 grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
           {useCases.map((item, i) => (
             <Reveal key={item.id} delay={i * 70}>
-              <div className="h-full bg-bg px-5 py-7 md:px-6">
-                <p className="text-[0.65rem] font-semibold tracking-[0.2em] text-frost-deep">
-                  {String(i + 1).padStart(2, "0")}
-                </p>
-                <h3 className="mt-4 text-xl tracking-tight">{item.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-ink-muted">
-                  {item.text}
-                </p>
+              <div className="h-full bg-bg">
+                <div className="relative aspect-[4/3] overflow-hidden bg-ice">
+                  <Image
+                    src={item.image}
+                    alt=""
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
+                </div>
+                <div className="px-5 py-6 md:px-6">
+                  <p className="text-[0.65rem] font-semibold tracking-[0.2em] text-frost-deep">
+                    {String(i + 1).padStart(2, "0")}
+                  </p>
+                  <h3 className="mt-3 text-xl tracking-tight">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-ink-muted">
+                    {item.text}
+                  </p>
+                </div>
               </div>
             </Reveal>
           ))}
@@ -84,7 +95,7 @@ export default function HomePage() {
               Коротко о главном
             </h2>
           </Reveal>
-          <dl className="mt-8 grid grid-cols-2 gap-px bg-line md:grid-cols-3 lg:grid-cols-6">
+          <dl className="mt-8 grid grid-cols-2 gap-px bg-line md:grid-cols-3 lg:grid-cols-4">
             {featuresCompact.map((f) => (
               <div key={f.title} className="bg-bg px-4 py-5">
                 <dt className="text-[0.65rem] font-semibold tracking-[0.16em] uppercase text-ink-muted">
@@ -107,7 +118,7 @@ export default function HomePage() {
                 Хиты
               </p>
               <h2 className="display mt-3 text-[clamp(2rem,4vw,3rem)] tracking-[-0.04em]">
-                Заказаны в большом количестве
+                Самые популярные комбинезоны
               </h2>
             </div>
             <CategoryNav className="mt-6" />

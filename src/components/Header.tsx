@@ -8,6 +8,9 @@ import { useCart } from "@/components/cart/CartProvider";
 import { ChipLink } from "@/components/ui/Chip";
 import { categories } from "@/lib/categories";
 import { buyerNav, companyNav } from "@/lib/nav";
+import { BrandStar } from "@/components/BrandStar";
+import { HeaderSearch } from "@/components/HeaderSearch";
+import { MessengerLinks } from "@/components/MessengerLinks";
 import { formatPhoneDisplay, siteConfig, socialNav } from "@/lib/site";
 
 function navActive(pathname: string, href: string) {
@@ -52,11 +55,12 @@ export function Header() {
             : "border-b border-transparent bg-transparent"
         }`}
       >
-        <div className="container-page flex min-h-[var(--nav-h)] items-center justify-between gap-3 py-3 lg:gap-6">
-          <div className="flex min-w-0 items-center gap-3 sm:gap-5">
+        <div className="container-page flex min-h-[var(--nav-h)] items-center justify-between gap-1.5 py-3 sm:gap-3 lg:gap-6">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-5">
             <button
               type="button"
               className={`inline-flex min-h-10 min-w-10 items-center gap-2 px-1 text-sm font-semibold tracking-[0.12em] uppercase md:text-base ${tone}`}
+              aria-label="Меню"
               aria-expanded={open}
               aria-controls="side-nav"
               onClick={() => setOpen(true)}
@@ -66,9 +70,9 @@ export function Header() {
                 <span className="block h-px w-full bg-current" />
                 <span className="block h-px w-full bg-current" />
               </span>
-              Меню
+              <span className="hidden sm:inline">Меню</span>
             </button>
-            <Link href="/" className="relative block h-10 w-56 sm:h-11 sm:w-64 md:h-12 md:w-72">
+            <Link href="/" className="relative block h-8 w-32 sm:h-11 sm:w-56 md:h-12 md:w-72">
               <Image
                 src={
                   solid
@@ -78,24 +82,38 @@ export function Header() {
                 alt="ADASTRA — на главную"
                 fill
                 className="object-contain object-left"
-                sizes="(max-width: 640px) 224px, 288px"
+                sizes="(max-width: 640px) 128px, 288px"
                 priority
               />
             </Link>
           </div>
 
-          <div className={`flex shrink-0 items-center gap-4 sm:gap-6 ${tone}`}>
-            <div className="hidden text-right md:block">
-              <a
-                href={`tel:${siteConfig.phoneRaw}`}
-                className="text-sm font-semibold tracking-wide md:text-base"
-              >
-                {formatPhoneDisplay()}
-              </a>
-              <p className="mt-0.5 text-xs leading-snug text-current/85 md:text-sm">
-                {siteConfig.hours}
-              </p>
+          <div className={`flex shrink-0 items-center gap-0.5 sm:gap-4 ${tone}`}>
+            <div className="hidden items-center gap-3 md:flex">
+              <div className="text-right">
+                <a
+                  href={`tel:${siteConfig.phoneRaw}`}
+                  className="text-sm font-semibold tracking-wide md:text-base"
+                >
+                  {formatPhoneDisplay()}
+                </a>
+                <p className="mt-0.5 text-xs leading-snug text-current/85 md:text-sm">
+                  {siteConfig.hours}
+                </p>
+              </div>
+              <MessengerLinks />
             </div>
+            <HeaderSearch
+              className="hidden w-44 lg:flex"
+              inputId="header-search"
+            />
+            <Link
+              href="/catalog"
+              className="inline-flex size-10 items-center justify-center lg:hidden"
+              aria-label="Поиск по каталогу"
+            >
+              <BrandStar size={16} />
+            </Link>
             <Link
               href="/cart"
               className="relative inline-flex min-h-10 items-center gap-2 text-sm font-semibold tracking-[0.12em] uppercase"
@@ -114,8 +132,23 @@ export function Header() {
                 />
               </svg>
               <span className="hidden sm:inline">Корзина</span>
-              <span className="tabular-nums">{count}</span>
+              {count > 0 ? (
+                <span className="tabular-nums">{count}</span>
+              ) : (
+                <span className="hidden tabular-nums sm:inline">{count}</span>
+              )}
             </Link>
+          </div>
+        </div>
+        <div className={`md:hidden ${tone}`}>
+          <div className="container-page flex flex-col gap-1.5 pb-2">
+            <a
+              href={`tel:${siteConfig.phoneRaw}`}
+              className="text-[0.8125rem] font-semibold tabular-nums"
+            >
+              {formatPhoneDisplay()}
+            </a>
+            <MessengerLinks />
           </div>
         </div>
       </header>
@@ -155,6 +188,7 @@ export function Header() {
             </button>
           </div>
           <div className="flex-1 overflow-y-auto px-6 py-5">
+            <HeaderSearch className="mb-6 w-full" inputId="menu-search" />
             <p className="label">Каталог</p>
             <div className="flex flex-wrap gap-1.5">
               <ChipLink href="/catalog" active={pathname === "/catalog"}>
@@ -212,6 +246,7 @@ export function Header() {
               {formatPhoneDisplay()}
             </a>
             <p className="mt-1 text-sm text-ink-muted">{siteConfig.hours}</p>
+            <MessengerLinks className="mt-3 -ml-1 text-ink" />
             <div className="mt-4 flex flex-wrap gap-1.5">
               {socialNav.map((item) => (
                 <a

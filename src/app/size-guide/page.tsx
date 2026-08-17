@@ -9,7 +9,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Как выбрать размер комбинезона ADASTRA",
   description:
-    "Таблица размеров и онлайн-подбор размера комбинезона ADASTRA по росту и обхватам. Как система AstraFit.",
+    "Таблица размеров и подбор комбинезона ADASTRA по росту и обхватам. Размеры 42–50 RU, рост от 155 см.",
   path: "/size-guide",
 });
 
@@ -34,8 +34,8 @@ export default function SizeGuidePage() {
           Как выбрать размер
         </h1>
         <p className="mt-4 text-ink-muted">
-          Ориентируйтесь на рост и обхваты или воспользуйтесь подбором размера
-          по параметрам.
+          Ориентируйтесь на рост и обхваты — в линейке 11 вариантов размеров
+          (42–50 RU). Полную сетку уточняем; при сомнении напишите нам до заказа.
         </p>
       </header>
 

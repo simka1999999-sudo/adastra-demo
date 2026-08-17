@@ -41,6 +41,7 @@ function CatalogResults({
     size?: string;
     sort?: "price_asc" | "price_desc";
     collection?: string;
+    q?: string;
   };
 }) {
   const list = applyFacets(products, facets);
@@ -107,6 +108,7 @@ function CatalogBrowserInner(props: Props) {
         size: sp.get("size") || undefined,
         sort,
         collection: sp.get("collection") || undefined,
+        q: sp.get("q") || undefined,
       }}
     />
   );

@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { formatPrice } from "@/lib/products";
-import { formatPhoneDisplay, siteConfig } from "@/lib/site";
 
 const slides = [
   {
@@ -40,7 +39,7 @@ export function HeroBanner({ fromPrice }: { fromPrice: number }) {
           alt={i === index ? slide.alt : ""}
           fill
           priority={i === 0}
-          className={`hero-media object-cover object-[center_20%] transition-opacity duration-[1400ms] ease-out ${
+          className={`hero-media object-cover object-[center_top] transition-opacity duration-[1400ms] ease-out ${
             i === index ? "opacity-80 kenburns-active" : "opacity-0"
           }`}
           sizes="100vw"
@@ -52,7 +51,7 @@ export function HeroBanner({ fromPrice }: { fromPrice: number }) {
         <p className="text-[0.68rem] font-semibold tracking-[0.2em] uppercase text-white/70">
           ADASTRA
         </p>
-        <h1 className="mt-4 max-w-2xl text-[clamp(1.7rem,4.4vw,3.15rem)] font-semibold leading-[1.12] tracking-tight text-white">
+        <h1 className="mt-4 max-w-2xl text-[clamp(1.45rem,6.2vw,3.15rem)] font-semibold leading-[1.15] tracking-tight text-pretty text-white">
           Утеплённые комбинезоны для зимы — тепло и стиль до −30 °C
         </h1>
         <p className="mt-4 max-w-md text-sm leading-relaxed text-white/75 sm:text-base">
@@ -65,12 +64,6 @@ export function HeroBanner({ fromPrice }: { fromPrice: number }) {
         <p className="mt-1 text-sm text-white/75">
           Доставка СДЭК и Ozon
         </p>
-        <a
-          href={`tel:${siteConfig.phoneRaw}`}
-          className="mt-2 text-sm font-semibold underline decoration-white/40 underline-offset-4 md:hidden"
-        >
-          {formatPhoneDisplay()}
-        </a>
         <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <Link href="/catalog/kombinezony" className="btn btn-light w-full sm:w-auto">
             Смотреть комбинезоны

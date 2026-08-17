@@ -57,15 +57,23 @@ export type ProductFilters = {
   color?: string;
   size?: string;
   collection?: string;
+  q?: string;
   sort?: "price_asc" | "price_desc" | "new";
   audience?: "women" | "all";
 };
 
 export function applyFacets(
   list: Product[],
-  filters: Pick<ProductFilters, "color" | "size" | "sort" | "collection">,
+  filters: Pick<ProductFilters, "color" | "size" | "sort" | "collection" | "q">,
 ): Product[] {
   let next = list;
+  if (filters.q) {
+    const q = filters.q.toLowerCase().trim();
+    next = next.filter((p) => {
+      const hay = `${p.title} ${p.shortTitle} ${p.masterSku || ""} ${p.id}`;
+      return hay.toLowerCase().includes(q);
+    });
+  }
   if (filters.color) {
     const q = filters.color.toLowerCase();
     next = next.filter((p) =>

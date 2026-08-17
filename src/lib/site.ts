@@ -33,7 +33,7 @@ export const siteConfig = {
   /** Статическая витрина без API (GitHub Pages). */
   isStaticDemo: process.env.NEXT_PUBLIC_STATIC_DEMO === "true",
   description:
-    "ADASTRA — утеплённые женские комбинезоны и верхняя одежда с доставкой по России. Мембрана 12000 мм, до −30 °C.",
+    "ADASTRA — утеплённые женские комбинезоны с доставкой по России. Thinsulate, мембрана 12 000 мм, от −5 до −30 °C.",
   phone: process.env.NEXT_PUBLIC_PHONE || "+7 (985) 439-42-91",
   phoneRaw: (process.env.NEXT_PUBLIC_PHONE || "+79854394291").replace(
     /[^\d+]/g,
@@ -50,6 +50,8 @@ export const siteConfig = {
       "https://www.instagram.com/adastra_fashion/",
     telegram:
       process.env.NEXT_PUBLIC_TELEGRAM_URL || "https://t.me/adastra_fashion",
+    whatsapp:
+      process.env.NEXT_PUBLIC_WHATSAPP_URL || "https://wa.me/79854394291",
     max: process.env.NEXT_PUBLIC_MAX_URL || "https://max.ru/",
     youtube:
       process.env.NEXT_PUBLIC_YOUTUBE_URL ||

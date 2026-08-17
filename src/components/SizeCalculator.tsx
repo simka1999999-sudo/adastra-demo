@@ -108,8 +108,7 @@ export function SizeCalculator() {
         Подбор размера
       </h2>
       <p className="mt-3 max-w-xl text-sm text-ink-muted">
-        Введите мерки в сантиметрах — подскажем ближайший размер из сетки ADASTRA
-        (как система AstraFit).
+        Введите мерки в сантиметрах — подскажем ближайший размер из сетки ADASTRA.
       </p>
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
