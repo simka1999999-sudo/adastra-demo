@@ -196,3 +196,9 @@ export async function loadOzonCatalog() {
   }
   return fillMissingPictures(offers);
 }
+
+export async function loadOzonOffersByProductIds(productIds: number[]) {
+  const ids = [...new Set(productIds.filter((id) => Number.isFinite(id) && id > 0))];
+  if (!ids.length) return [];
+  return fillMissingPictures(await fetchOzonOffers(ids));
+}

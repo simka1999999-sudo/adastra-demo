@@ -3,15 +3,16 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Product } from "@/lib/types";
 import {
-  productUploadDir,
+  productPhotoDir,
   readCatalog,
-  removeUploadedFile,
+  removeStoredPhoto,
   sanitizeSegment,
   upsertCatalogProducts,
 } from "@/lib/catalog-store";
-import { isRealProductPhoto, isUploadedPhoto } from "@/lib/catalog-defaults";
+import { isRealProductPhoto } from "@/lib/catalog-defaults";
 import {
   loadOzonCatalog,
+  loadOzonOffersByProductIds,
   matchOzonOffer,
   ozonSellerConfigured,
 } from "@/lib/ozon-seller";
@@ -69,7 +70,7 @@ async function downloadImage(url: string) {
 }
 
 async function saveOzonPhotos(productId: string, urls: string[]) {
-  const dir = productUploadDir(productId);
+  const dir = productPhotoDir(productId);
   mkdirSync(dir, { recursive: true });
   const stamp = Date.now();
   const files = await Promise.all(
@@ -78,7 +79,7 @@ async function saveOzonPhotos(productId: string, urls: string[]) {
       if (!file) return null;
       const name = `ozon-${stamp}-${i}.${file.ext}`;
       writeFileSync(join(dir, name), file.buf);
-      return `/uploads/products/${sanitizeSegment(productId)}/${name}`;
+      return `/products/${sanitizeSegment(productId)}/${name}`;
     }),
   );
   return files.filter((src): src is string => Boolean(src));
@@ -96,7 +97,16 @@ export async function pullOzonPhotos(options: {
   const targets = options.ids?.length
     ? catalog.filter((p) => options.ids!.includes(p.id))
     : catalog;
-  const offers = await loadOzonCatalog();
+  const need = targets.filter(
+    (p) => options.force || options.onlyMissing === false || !p.images.some(isRealProductPhoto),
+  );
+  const knownIds = need
+    .map((p) => p.ozonId)
+    .filter((id): id is number => typeof id === "number" && id > 0);
+  const offers =
+    knownIds.length === need.length && need.length
+      ? await loadOzonOffersByProductIds(knownIds)
+      : await loadOzonCatalog();
   const rows: OzonPhotoRow[] = [];
   const updates: Product[] = [];
 
@@ -130,7 +140,7 @@ export async function pullOzonPhotos(options: {
     }
     try {
       if (options.force) {
-        product.images.filter(isUploadedPhoto).forEach(removeUploadedFile);
+        product.images.filter(isRealProductPhoto).forEach(removeStoredPhoto);
       }
       const keep = options.force ? [] : product.images.filter(isRealProductPhoto);
       const added = await saveOzonPhotos(product.id, offer.images);

@@ -14,6 +14,7 @@ export {
 
 const CATALOG_REL = join("content", "products", "catalog.json");
 const UPLOAD_REL = join("public", "uploads", "products");
+const PRODUCT_PHOTO_REL = join("public", "products");
 
 export function catalogFilePath() {
   return join(process.cwd(), CATALOG_REL);
@@ -23,8 +24,16 @@ export function productUploadDir(productId: string) {
   return join(process.cwd(), UPLOAD_REL, sanitizeSegment(productId));
 }
 
+export function productPhotoDir(productId: string) {
+  return join(process.cwd(), PRODUCT_PHOTO_REL, sanitizeSegment(productId));
+}
+
 export function isOwnProductPhoto(src: string) {
   return src.startsWith("/uploads/products/");
+}
+
+export function isOzonStorePhoto(src: string) {
+  return /^\/products\/[^/]+\/ozon-\d+-\d+\.(jpe?g|png|webp)$/i.test(src);
 }
 
 export function isPlaceholderPhoto(src: string) {
@@ -74,7 +83,11 @@ export function removeCatalogProduct(id: string) {
 }
 
 export function removeUploadedFile(src: string) {
-  if (!isOwnProductPhoto(src)) return;
+  removeStoredPhoto(src);
+}
+
+export function removeStoredPhoto(src: string) {
+  if (!isOwnProductPhoto(src) && !isOzonStorePhoto(src)) return;
   const abs = join(process.cwd(), "public", src.replace(/^\//, ""));
   if (existsSync(abs)) unlinkSync(abs);
 }
