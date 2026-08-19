@@ -36,30 +36,17 @@ export type FeatureCompact = {
   title: string;
   value: string;
   image?: string;
-  imageFit?: "cover" | "contain";
-  imageOnDark?: boolean;
 };
 
 export const featuresCompact: FeatureCompact[] = [
-  {
-    title: "Ткань",
-    value: "непромокаемая мембрана 12 000 мм / 7000 г/м²",
-    image: "/lookbook/detail-membrane.jpg",
-    imageFit: "contain",
-  },
+  { title: "Ткань", value: "непромокаемая мембрана 12 000 мм / 7000 г/м²" },
   { title: "Режим", value: "от −5 до −30 °C" },
-  {
-    title: "Утеплитель",
-    value: "Thinsulate — без лишнего объёма",
-    image: "/lookbook/detail-thinsulate.jpg",
-    imageFit: "contain",
-    imageOnDark: true,
-  },
+  { title: "Утеплитель", value: "Thinsulate — без лишнего объёма" },
   { title: "Размеры", value: "44–50 RU" },
   { title: "Рост", value: "от 155 до 178 см" },
   {
     title: "Подкладка",
-    value: "Omniheat",
+    value: "Omniheat — на 20% теплее обычной",
     image: "/lookbook/detail-omniheat.jpg",
   },
   {
