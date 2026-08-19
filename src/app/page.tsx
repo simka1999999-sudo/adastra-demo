@@ -95,7 +95,7 @@ export default function HomePage() {
               Коротко о главном
             </h2>
           </Reveal>
-          <dl className="mt-8 grid grid-cols-2 gap-px bg-line md:grid-cols-3 lg:grid-cols-5">
+          <dl className="mt-8 grid grid-cols-1 gap-px bg-line sm:grid-cols-3">
             {featuresCompact
               .filter((f) => !f.image)
               .map((f) => (
@@ -114,12 +114,20 @@ export default function HomePage() {
               .filter((f) => f.image)
               .map((f) => (
                 <div key={f.title} className="bg-bg">
-                  <div className="relative aspect-[5/4] overflow-hidden bg-ice sm:aspect-[4/3]">
+                  <div
+                    className={`relative aspect-[5/4] overflow-hidden sm:aspect-[4/3] ${
+                      f.imageOnDark ? "bg-ink" : "bg-ice"
+                    }`}
+                  >
                     <Image
                       src={f.image!}
                       alt={`${f.title}: ${f.value}`}
                       fill
-                      className="object-cover"
+                      className={
+                        f.imageFit === "contain"
+                          ? "object-contain p-4 sm:p-6"
+                          : "object-cover"
+                      }
                       sizes="(max-width: 640px) 100vw, 50vw"
                     />
                   </div>
