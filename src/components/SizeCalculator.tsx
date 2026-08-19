@@ -104,8 +104,11 @@ export function SizeCalculator() {
 
   return (
     <section className="mt-12 border border-line bg-bg-elevated p-6 md:p-8">
-      <h2 className="display text-[clamp(1.5rem,3vw,2rem)] tracking-[-0.03em]">
-        Подбор размера
+      <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
+        Шаг 2
+      </p>
+      <h2 className="display mt-3 text-[clamp(1.5rem,3vw,2rem)] tracking-[-0.03em]">
+        Сверьте с сеткой
       </h2>
       <p className="mt-3 max-w-xl text-sm text-ink-muted">
         Введите мерки в сантиметрах — подскажем ближайший размер из сетки ADASTRA.
@@ -113,9 +116,9 @@ export function SizeCalculator() {
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
           { id: "height", label: "Рост", value: height, set: setHeight },
-          { id: "chest", label: "Грудь", value: chest, set: setChest },
+          { id: "chest", label: "Обхват груди", value: chest, set: setChest },
           { id: "waist", label: "Талия", value: waist, set: setWaist },
-          { id: "hips", label: "Бёдра", value: hips, set: setHips },
+          { id: "hips", label: "Обхват бёдер", value: hips, set: setHips },
         ].map((f) => (
           <div key={f.id}>
             <label className="label" htmlFor={f.id}>

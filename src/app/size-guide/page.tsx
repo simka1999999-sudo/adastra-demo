@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SizeCalculator } from "@/components/SizeCalculator";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { FaqSection } from "@/components/seo/FaqSection";
+import { sizeMeasurements } from "../../../content/size";
 import { sizeFaq } from "../../../content/seo/categories";
 import { buildPageMetadata } from "@/lib/seo";
 
@@ -34,10 +35,29 @@ export default function SizeGuidePage() {
           Как выбрать размер
         </h1>
         <p className="mt-4 text-ink-muted">
-          Ориентируйтесь на рост и обхваты — в линейке 11 вариантов размеров
-          (42–50 RU). Полную сетку уточняем; при сомнении напишите нам до заказа.
+          Два шага: снимите мерки и сверьте с сеткой. В линейке 11 вариантов
+          (42–50 RU). Полную таблицу уточняем; при сомнении напишите нам до заказа.
         </p>
       </header>
+
+      <section className="border border-line bg-bg-elevated p-6 md:p-8">
+        <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
+          Шаг 1
+        </p>
+        <h2 className="display mt-3 text-[clamp(1.5rem,3vw,2rem)] tracking-[-0.03em]">
+          Снимите мерки
+        </h2>
+        <dl className="mt-6 grid gap-6 sm:grid-cols-3">
+          {sizeMeasurements.map((item) => (
+            <div key={item.title}>
+              <dt className="text-[0.65rem] font-semibold tracking-[0.16em] uppercase text-ink-muted">
+                {item.title}
+              </dt>
+              <dd className="mt-2 text-sm leading-relaxed">{item.text}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
 
       <SizeCalculator />
 
@@ -47,9 +67,9 @@ export default function SizeGuidePage() {
             <tr>
               <th className="px-4 py-3">Рост</th>
               <th className="px-4 py-3">Размер RU</th>
-              <th className="px-4 py-3">Грудь</th>
+              <th className="px-4 py-3">Обхват груди</th>
               <th className="px-4 py-3">Талия</th>
-              <th className="px-4 py-3">Бёдра</th>
+              <th className="px-4 py-3">Обхват бёдер</th>
             </tr>
           </thead>
           <tbody>
@@ -65,14 +85,6 @@ export default function SizeGuidePage() {
           </tbody>
         </table>
       </div>
-
-      <section className="mt-10 max-w-2xl space-y-4 text-sm leading-relaxed text-ink-muted">
-        <h2 className="text-xl text-ink">Как снять мерки</h2>
-        <p>1. Грудь — по самым выступающим точкам, лента параллельно полу.</p>
-        <p>2. Талия — в самом узком месте.</p>
-        <p>3. Бёдра — по самым широким точкам.</p>
-        <p>4. Рост — без обуви, спиной к стене.</p>
-      </section>
 
       <Link href="/catalog/kombinezony" className="btn mt-10 inline-flex">
         Смотреть комбинезоны
