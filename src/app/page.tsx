@@ -95,7 +95,7 @@ export default function HomePage() {
               Коротко о главном
             </h2>
           </Reveal>
-          <dl className="mt-8 grid grid-cols-2 gap-px bg-line md:grid-cols-3 lg:grid-cols-5">
+          <dl className="mt-8 grid grid-cols-1 gap-px bg-line sm:grid-cols-2 lg:grid-cols-5">
             {featuresCompact
               .filter((f) => !f.image)
               .map((f) => (
