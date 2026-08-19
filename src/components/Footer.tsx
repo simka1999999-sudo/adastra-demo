@@ -18,8 +18,8 @@ export function Footer() {
             />
           </div>
           <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/65">
-            Утеплённые комбинезоны: Thinsulate, мембрана 12 000 мм, от −5 до
-            −30 °C. Доставка СДЭК и Ozon.
+            Утеплённые комбинезоны: Thinsulate, Omniheat, мембрана 12 000 мм,
+            от −5 до −30 °C. Доставка СДЭК и Ozon.
           </p>
           <p className="mt-5 text-sm">
             <a href={`tel:${siteConfig.phoneRaw}`} className="hover:text-white/80">

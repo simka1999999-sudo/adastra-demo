@@ -33,7 +33,7 @@ export const siteConfig = {
   /** Статическая витрина без API (GitHub Pages). */
   isStaticDemo: process.env.NEXT_PUBLIC_STATIC_DEMO === "true",
   description:
-    "ADASTRA — утеплённые женские комбинезоны с доставкой по России. Thinsulate, мембрана 12 000 мм, от −5 до −30 °C.",
+    "ADASTRA — утеплённые женские комбинезоны с доставкой по России. Thinsulate, Omniheat, мембрана 12 000 мм, от −5 до −30 °C.",
   phone: process.env.NEXT_PUBLIC_PHONE || "+7 (985) 439-42-91",
   phoneRaw: (process.env.NEXT_PUBLIC_PHONE || "+79854394291").replace(
     /[^\d+]/g,

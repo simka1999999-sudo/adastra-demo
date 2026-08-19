@@ -6,6 +6,7 @@
 export const HIT_SKUS = [
   "blackhit18",
   "leohit86",
+  "stork18",
   "belt blackhit18",
   "belt leohit86",
   "12blackhit",

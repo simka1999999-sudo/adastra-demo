@@ -7,16 +7,16 @@ import { formatPrice } from "@/lib/products";
 
 const slides = [
   {
-    src: "/lookbook/hero-1.jpg",
-    alt: "Женский утеплённый комбинезон ADASTRA",
+    src: "/lookbook/hero-check.jpg",
+    alt: "Комбинезон ADASTRA Black Hit — чёрный с клеткой",
   },
   {
-    src: "/lookbook/hero-2.jpg",
-    alt: "ADASTRA в городе и на прогулке",
+    src: "/lookbook/hero-leo.jpg",
+    alt: "Комбинезон ADASTRA Leo Hit — чёрный с леопардом",
   },
   {
-    src: "/lookbook/hero-3.jpg",
-    alt: "Комбинезон ADASTRA для зимы",
+    src: "/lookbook/hero-crane.jpg",
+    alt: "Комбинезон ADASTRA Stork — чёрный с журавлями",
   },
 ];
 

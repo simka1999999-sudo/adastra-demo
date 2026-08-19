@@ -17,9 +17,9 @@ const fromOveralls = getFromPrice("overalls");
 
 export const metadata: Metadata = buildPageMetadata({
   title: "ADASTRA — бренд утеплённой женской одежды",
-  description: `Утеплённые комбинезоны ADASTRA от −5 до −30 °C, от ${formatPrice(fromOveralls)}. Thinsulate, мембрана 12 000 мм. Доставка СДЭК и Ozon по России.`,
+  description: `Утеплённые комбинезоны ADASTRA от −5 до −30 °C, от ${formatPrice(fromOveralls)}. Thinsulate, Omniheat, мембрана 12 000 мм. Доставка СДЭК и Ozon по России.`,
   path: "/",
-  image: "/lookbook/hero-1.jpg",
+  image: "/lookbook/hero-check.jpg",
 });
 
 export default function HomePage() {

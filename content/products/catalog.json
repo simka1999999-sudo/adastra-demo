@@ -27,18 +27,13 @@
     ],
     "care": "Снять отстегивающуюся опушку. Стирать при температуре 30°С отдельно от других вещей, вывернув изделие наизнанку. Стирать моющим средством для мембранных тканей, не содержащим отбеливающие вещества. Полоскать без кондиционера. Вынуть изделие незамедлительно после окончания стирки. Сушить в разложенном виде, горизонтально, при комнатной температуре. Не сушить на батарее.",
     "images": [
-      "/products/p-blackhit18/ozon-1786969265432-0.jpg",
-      "/products/p-blackhit18/ozon-1786969265432-1.jpg",
-      "/products/p-blackhit18/ozon-1786969265432-10.jpg",
-      "/products/p-blackhit18/ozon-1786969265432-11.jpg",
-      "/products/p-blackhit18/ozon-1786969265432-2.jpg",
-      "/products/p-blackhit18/ozon-1786969265432-3.jpg",
-      "/products/p-blackhit18/ozon-1786969265432-4.jpg",
-      "/products/p-blackhit18/ozon-1786969265432-5.jpg",
-      "/products/p-blackhit18/ozon-1786969265432-6.jpg",
-      "/products/p-blackhit18/ozon-1786969265432-7.jpg",
-      "/products/p-blackhit18/ozon-1786969265432-8.jpg",
-      "/products/p-blackhit18/ozon-1786969265432-9.jpg"
+      "/products/p-blackhit18/studio-00.jpg",
+      "/products/p-blackhit18/studio-01.jpg",
+      "/products/p-blackhit18/studio-02.jpg",
+      "/products/p-blackhit18/studio-03.jpg",
+      "/products/p-blackhit18/studio-04.jpg",
+      "/products/p-blackhit18/studio-05.jpg",
+      "/products/p-blackhit18/studio-06.jpg"
     ],
     "sizes": [
       {
@@ -137,15 +132,12 @@
     ],
     "care": "Снять отстегивающуюся опушку. Стирать при температуре 30°С отдельно от других вещей, вывернув изделие наизнанку. Стирать моющим средством для мембранных тканей, не содержащим отбеливающие вещества. Полоскать без кондиционера. Вынуть изделие незамедлительно после окончания стирки. Сушить в разложенном виде, горизонтально, при комнатной температуре. Не сушить на батарее.",
     "images": [
-      "/products/p-leohit86/ozon-1786970078920-0.jpg",
-      "/products/p-leohit86/ozon-1786970078920-1.jpg",
-      "/products/p-leohit86/ozon-1786970078920-2.jpg",
-      "/products/p-leohit86/ozon-1786970078920-3.jpg",
-      "/products/p-leohit86/ozon-1786970078920-4.jpg",
-      "/products/p-leohit86/ozon-1786970078920-5.jpg",
-      "/products/p-leohit86/ozon-1786970078920-6.jpg",
-      "/products/p-leohit86/ozon-1786970078920-7.jpg",
-      "/products/new/leo-standard.jpg"
+      "/products/p-leohit86/studio-03.jpg",
+      "/products/p-leohit86/studio-04.jpg",
+      "/products/p-leohit86/studio-00.jpg",
+      "/products/p-leohit86/studio-05.jpg",
+      "/products/p-leohit86/studio-01.jpg",
+      "/products/p-leohit86/studio-02.jpg"
     ],
     "sizes": [
       {
@@ -3677,17 +3669,14 @@
     ],
     "care": "Снять отстегивающуюся опушку. Стирать при температуре 30°С отдельно от других вещей, вывернув изделие наизнанку. Стирать моющим средством для мембранных тканей, не содержащим отбеливающие вещества. Полоскать без кондиционера. Вынуть изделие незамедлительно после окончания стирки. Сушить в разложенном виде, горизонтально, при комнатной температуре. Не сушить на батарее.",
     "images": [
-      "/products/p-stork18/ozon-1786970086580-0.jpg",
-      "/products/p-stork18/ozon-1786970086580-1.jpg",
-      "/products/p-stork18/ozon-1786970086580-2.jpg",
-      "/products/p-stork18/ozon-1786970086580-3.jpg",
-      "/products/p-stork18/ozon-1786970086580-4.jpg",
-      "/products/p-stork18/ozon-1786970086580-5.jpg",
-      "/products/p-stork18/ozon-1786970086580-6.jpg",
-      "/products/p-stork18/ozon-1786970086580-7.jpg",
-      "/products/overall-1.webp",
-      "/products/overall-2.webp",
-      "/products/overall-3.webp"
+      "/products/p-stork18/studio-00.jpg",
+      "/products/p-stork18/studio-01.jpg",
+      "/products/p-stork18/studio-02.jpg",
+      "/products/p-stork18/studio-03.jpg",
+      "/products/p-stork18/studio-04.jpg",
+      "/products/p-stork18/studio-05.jpg",
+      "/products/p-stork18/studio-06.jpg",
+      "/products/p-stork18/studio-07.jpg"
     ],
     "sizes": [
       {
@@ -3746,12 +3735,12 @@
       "description": "Комбинезон ADASTRA Stork 18 · черный. от -5°С до -30°С. Доставка по России, оплата онлайн."
     },
     "inStock": true,
-    "featured": false,
-    "isHit": false,
+    "featured": true,
+    "isHit": true,
     "isNew": false,
     "colorGroup": "astra888",
     "ozonId": 2045392283,
-    "hitRank": 99
+    "hitRank": 6
   },
   {
     "id": "p-stork29",
