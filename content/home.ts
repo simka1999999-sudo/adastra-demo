@@ -55,8 +55,8 @@ export const featuresCompact: FeatureCompact[] = [
     imageFit: "contain",
     imageOnDark: true,
   },
-  { title: "Размеры", value: "42–50 RU" },
-  { title: "Рост", value: "от 155 до 180 см" },
+  { title: "Размеры", value: "44–50 RU" },
+  { title: "Рост", value: "от 155 до 178 см" },
   {
     title: "Подкладка",
     value: "Omniheat",

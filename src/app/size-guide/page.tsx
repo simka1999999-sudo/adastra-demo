@@ -3,23 +3,21 @@ import Link from "next/link";
 import { SizeCalculator } from "@/components/SizeCalculator";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { FaqSection } from "@/components/seo/FaqSection";
-import { sizeMeasurements } from "../../../content/size";
+import {
+  brandSizes,
+  cmRange,
+  heightGrades,
+  sizeMeasurements,
+} from "../../../content/size";
 import { sizeFaq } from "../../../content/seo/categories";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Как выбрать размер комбинезона ADASTRA",
   description:
-    "Таблица размеров и подбор комбинезона ADASTRA по росту и обхватам. Размеры 42–50 RU, рост от 155 см.",
+    "Таблица размеров комбинезона ADASTRA: S–XL, 44–50 RU, ростовки 158–176. Обхват груди, бёдер и рост.",
   path: "/size-guide",
 });
-
-const rows = [
-  { height: "158", ru: "42", chest: "84–88", waist: "66–70", hips: "92–96" },
-  { height: "164", ru: "44–46", chest: "88–96", waist: "70–78", hips: "96–104" },
-  { height: "170", ru: "46", chest: "92–96", waist: "74–78", hips: "100–104" },
-  { height: "176", ru: "46–48", chest: "96–100", waist: "78–82", hips: "104–108" },
-];
 
 export default function SizeGuidePage() {
   return (
@@ -35,8 +33,8 @@ export default function SizeGuidePage() {
           Как выбрать размер
         </h1>
         <p className="mt-4 text-ink-muted">
-          Два шага: снимите мерки и сверьте с сеткой. В линейке 11 вариантов
-          (42–50 RU). Полную таблицу уточняем; при сомнении напишите нам до заказа.
+          Снимите мерки и сверьте с сеткой: размер бренда S–XL (44–50 RU) и
+          ростовка 158–176. Если не уверены — напишите нам до заказа.
         </p>
       </header>
 
@@ -61,30 +59,105 @@ export default function SizeGuidePage() {
 
       <SizeCalculator />
 
-      <div className="mt-12 overflow-x-auto border border-line bg-bg-elevated">
-        <table className="min-w-full text-left text-sm">
-          <thead className="border-b border-line text-[0.72rem] uppercase tracking-[0.12em] text-ink-muted">
-            <tr>
-              <th className="px-4 py-3">Рост</th>
-              <th className="px-4 py-3">Размер RU</th>
-              <th className="px-4 py-3">Обхват груди</th>
-              <th className="px-4 py-3">Талия</th>
-              <th className="px-4 py-3">Обхват бёдер</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.height} className="border-b border-line/70">
-                <td className="px-4 py-3">{row.height}</td>
-                <td className="px-4 py-3">{row.ru}</td>
-                <td className="px-4 py-3">{row.chest}</td>
-                <td className="px-4 py-3">{row.waist}</td>
-                <td className="px-4 py-3">{row.hips}</td>
+      <section className="mt-12 space-y-8">
+        <div className="overflow-x-auto border border-line bg-bg-elevated">
+          <div className="border-b border-line px-4 py-4 md:px-6">
+            <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
+              Размер
+            </p>
+            <h2 className="mt-2 text-xl tracking-tight">
+              Обхваты груди и бёдер
+            </h2>
+          </div>
+          <table className="min-w-full text-left text-sm">
+            <thead className="border-b border-line text-[0.72rem] uppercase tracking-[0.12em] text-ink-muted">
+              <tr>
+                <th className="px-4 py-3 md:px-6">Параметр</th>
+                {brandSizes.map((size) => (
+                  <th key={size.id} className="px-4 py-3">
+                    {size.id}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              <tr className="border-b border-line/70">
+                <th className="px-4 py-3 font-medium md:px-6">
+                  Российский размер
+                </th>
+                {brandSizes.map((size) => (
+                  <td key={size.id} className="px-4 py-3">
+                    {size.ru}
+                  </td>
+                ))}
+              </tr>
+              <tr className="border-b border-line/70">
+                <th className="px-4 py-3 font-medium md:px-6">
+                  Обхват груди, см
+                </th>
+                {brandSizes.map((size) => (
+                  <td key={size.id} className="px-4 py-3">
+                    {cmRange(size.chestMin, size.chestMax)}
+                  </td>
+                ))}
+              </tr>
+              <tr>
+                <th className="px-4 py-3 font-medium md:px-6">
+                  Обхват бёдер, см
+                </th>
+                {brandSizes.map((size) => (
+                  <td key={size.id} className="px-4 py-3">
+                    {cmRange(size.hipsMin, size.hipsMax)}
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="overflow-x-auto border border-line bg-bg-elevated">
+          <div className="border-b border-line px-4 py-4 md:px-6">
+            <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
+              Рост
+            </p>
+            <h2 className="mt-2 text-xl tracking-tight">Ростовка комбинезона</h2>
+          </div>
+          <table className="min-w-full text-left text-sm">
+            <thead className="border-b border-line text-[0.72rem] uppercase tracking-[0.12em] text-ink-muted">
+              <tr>
+                <th className="px-4 py-3 md:px-6">Параметр</th>
+                {heightGrades.map((grade) => (
+                  <th key={grade.id} className="px-4 py-3">
+                    {grade.id}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th className="px-4 py-3 font-medium md:px-6">Рост, см</th>
+                {heightGrades.map((grade) => (
+                  <td key={grade.id} className="px-4 py-3">
+                    {cmRange(grade.min, grade.max)}
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <aside className="mt-10 border border-line bg-bg-elevated p-6 md:p-8">
+        <h2 className="text-xl tracking-tight">Если не уверены в размере</h2>
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-muted">
+          Напишите нам — подскажем размер и ростовку до заказа.
+        </p>
+        <p className="mt-5">
+          <Link href="/contacts" className="chip">
+            Написать нам
+          </Link>
+        </p>
+      </aside>
 
       <Link href="/catalog/kombinezony" className="btn mt-10 inline-flex">
         Смотреть комбинезоны

@@ -2,105 +2,46 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { brandSizes, heightGrades } from "../../content/size";
 
-type SizeRow = {
-  id: string;
-  label: string;
-  heightMin: number;
-  heightMax: number;
-  chestMin: number;
-  chestMax: number;
-  waistMin: number;
-  waistMax: number;
-  hipsMin: number;
-  hipsMax: number;
-};
-
-const SIZE_ROWS: SizeRow[] = [
-  {
-    id: "42",
-    label: "158 (42 RU)",
-    heightMin: 154,
-    heightMax: 160,
-    chestMin: 84,
-    chestMax: 88,
-    waistMin: 66,
-    waistMax: 70,
-    hipsMin: 92,
-    hipsMax: 96,
-  },
-  {
-    id: "44-46",
-    label: "164 (44–46 RU)",
-    heightMin: 160,
-    heightMax: 167,
-    chestMin: 88,
-    chestMax: 96,
-    waistMin: 70,
-    waistMax: 78,
-    hipsMin: 96,
-    hipsMax: 104,
-  },
-  {
-    id: "46",
-    label: "170 (46 RU)",
-    heightMin: 167,
-    heightMax: 173,
-    chestMin: 92,
-    chestMax: 96,
-    waistMin: 74,
-    waistMax: 78,
-    hipsMin: 100,
-    hipsMax: 104,
-  },
-  {
-    id: "46-48",
-    label: "176 (46–48 RU)",
-    heightMin: 173,
-    heightMax: 180,
-    chestMin: 96,
-    chestMax: 100,
-    waistMin: 78,
-    waistMax: 82,
-    hipsMin: 104,
-    hipsMax: 108,
-  },
-];
-
-function scoreRow(
-  row: SizeRow,
-  height: number,
-  chest: number,
-  waist: number,
-  hips: number,
-) {
-  const inRange = (v: number, min: number, max: number) =>
-    v >= min && v <= max ? 0 : Math.min(Math.abs(v - min), Math.abs(v - max));
-  return (
-    inRange(height, row.heightMin, row.heightMax) * 1.2 +
-    inRange(chest, row.chestMin, row.chestMax) +
-    inRange(waist, row.waistMin, row.waistMax) +
-    inRange(hips, row.hipsMin, row.hipsMax)
-  );
+function distanceToRange(value: number, min: number, max: number) {
+  if (value >= min && value <= max) return 0;
+  return Math.min(Math.abs(value - min), Math.abs(value - max));
 }
 
 export function SizeCalculator() {
   const [height, setHeight] = useState("");
   const [chest, setChest] = useState("");
-  const [waist, setWaist] = useState("");
   const [hips, setHips] = useState("");
 
   const result = useMemo(() => {
     const h = Number(height);
     const c = Number(chest);
-    const w = Number(waist);
     const hi = Number(hips);
-    if (![h, c, w, hi].every((n) => n > 0)) return null;
-    const ranked = [...SIZE_ROWS]
-      .map((row) => ({ row, score: scoreRow(row, h, c, w, hi) }))
-      .sort((a, b) => a.score - b.score);
-    return ranked[0];
-  }, [height, chest, waist, hips]);
+    if (![h, c, hi].every((n) => n > 0)) return null;
+
+    const brand = [...brandSizes]
+      .map((size) => ({
+        size,
+        score:
+          distanceToRange(c, size.chestMin, size.chestMax) +
+          distanceToRange(hi, size.hipsMin, size.hipsMax),
+      }))
+      .sort((a, b) => a.score - b.score)[0];
+
+    const grade = [...heightGrades]
+      .map((row) => ({
+        row,
+        score: distanceToRange(h, row.min, row.max),
+      }))
+      .sort((a, b) => a.score - b.score)[0];
+
+    return {
+      brand: brand.size,
+      grade: grade.row,
+      exact: brand.score === 0 && grade.score === 0,
+    };
+  }, [height, chest, hips]);
 
   return (
     <section className="mt-12 border border-line bg-bg-elevated p-6 md:p-8">
@@ -111,13 +52,13 @@ export function SizeCalculator() {
         Сверьте с сеткой
       </h2>
       <p className="mt-3 max-w-xl text-sm text-ink-muted">
-        Введите мерки в сантиметрах — подскажем ближайший размер из сетки ADASTRA.
+        Введите рост, обхват груди и обхват бёдер — подскажем размер бренда и
+        ростовку.
       </p>
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 grid gap-4 sm:grid-cols-3">
         {[
           { id: "height", label: "Рост", value: height, set: setHeight },
           { id: "chest", label: "Обхват груди", value: chest, set: setChest },
-          { id: "waist", label: "Талия", value: waist, set: setWaist },
           { id: "hips", label: "Обхват бёдер", value: hips, set: setHips },
         ].map((f) => (
           <div key={f.id}>
@@ -144,12 +85,12 @@ export function SizeCalculator() {
             Рекомендуем
           </p>
           <p className="mt-2 text-2xl font-semibold tracking-tight">
-            {result.row.label}
+            {result.brand.id} · {result.brand.ru} RU, ростовка {result.grade.id}
           </p>
           <p className="mt-2 text-sm text-ink-muted">
-            {result.score === 0
+            {result.exact
               ? "Параметры точно попадают в размерную сетку."
-              : "Ближайший размер по вашим меркам. При сомнении напишите нам — уточним до заказа."}
+              : "Ближайший размер по вашим меркам. Если не уверены — напишите нам до заказа."}
           </p>
           <p className="mt-4">
             <Link href="/catalog/kombinezony" className="chip">
@@ -159,7 +100,7 @@ export function SizeCalculator() {
         </div>
       ) : (
         <p className="mt-6 text-sm text-ink-muted">
-          Заполните все четыре поля, чтобы увидеть рекомендацию.
+          Заполните три поля, чтобы увидеть рекомендацию.
         </p>
       )}
     </section>
