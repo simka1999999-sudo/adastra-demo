@@ -35,6 +35,7 @@ export const useCases: UseCase[] = [
 export type FeatureCompact = {
   title: string;
   value: string;
+  image?: string;
 };
 
 export const featuresCompact: FeatureCompact[] = [
@@ -43,6 +44,14 @@ export const featuresCompact: FeatureCompact[] = [
   { title: "Утеплитель", value: "Thinsulate" },
   { title: "Размеры", value: "42–50 RU" },
   { title: "Рост", value: "от 155 до 180 см" },
-  { title: "Подкладка", value: "Omniheat" },
-  { title: "Швы", value: "проклеены" },
+  {
+    title: "Подкладка",
+    value: "Omniheat",
+    image: "/lookbook/detail-omniheat.jpg",
+  },
+  {
+    title: "Швы",
+    value: "проклеены",
+    image: "/lookbook/detail-seams.jpg",
+  },
 ];
