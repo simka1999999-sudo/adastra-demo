@@ -26,7 +26,7 @@ export function ProductCard({ product }: { product: Product }) {
               alt={productImageAlt(product)}
               fill
               sizes="(max-width: 768px) 50vw, 25vw"
-              className="img-primary object-cover"
+              className="img-primary object-cover object-[center_12%]"
             />
           ) : (
             <ProductPhotoStub />
@@ -37,7 +37,7 @@ export function ProductCard({ product }: { product: Product }) {
               alt=""
               fill
               sizes="(max-width: 768px) 50vw, 25vw"
-              className="img-secondary absolute inset-0 object-cover"
+              className="img-secondary absolute inset-0 object-cover object-[center_12%]"
               aria-hidden
             />
           ) : null}

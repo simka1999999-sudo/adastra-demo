@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
@@ -9,7 +10,7 @@ import { siteConfig } from "@/lib/site";
 export const metadata: Metadata = buildPageMetadata({
   title: "Отзывы покупателей ADASTRA на Ozon",
   description:
-    "Отзывы о комбинезонах ADASTRA: город, поездки, горы и прогулки. Тысячи оценок на Ozon.",
+    "Отзывы о комбинезонах ADASTRA: город, поездки, горы и прогулки. Более 1000 довольных клиентов.",
   path: "/reviews",
 });
 
@@ -39,34 +40,40 @@ export default function ReviewsPage() {
       />
       <header className="mb-10 max-w-2xl">
         <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
-          Ozon
+          Отзывы
         </p>
         <h1 className="display mt-3 text-[clamp(2.2rem,4vw,3.2rem)] tracking-[-0.04em]">
-          Отзывы покупателей
+          {ozonReviewsMeta.totalLabel}
         </h1>
         <p className="mt-4 text-ink-muted">
-          {ozonReviewsMeta.totalLabel}. Средняя оценка{" "}
-          {ozonReviewsMeta.averageRating} из 5.
+          Средняя оценка {ozonReviewsMeta.averageRating} из 5 на Ozon.
         </p>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-3">
         {ozonReviews.map((r) => (
           <blockquote
             key={r.id}
-            className="border border-line bg-bg-elevated p-6"
+            className="overflow-hidden border border-line bg-bg-elevated"
           >
-            <p className="text-sm font-semibold tracking-[0.12em] uppercase">
-              {"★".repeat(r.rating)}
-              <span className="text-ink-muted">
-                {"☆".repeat(5 - r.rating)}
-              </span>
-            </p>
-            <p className="mt-4 text-base leading-relaxed">«{r.text}»</p>
-            <footer className="mt-4 text-sm text-ink-muted">
-              {r.author}
-              {r.context ? ` · ${r.context}` : ""}
-            </footer>
+            <div className="relative aspect-[5/4] bg-ice">
+              <Image
+                src={r.image}
+                alt=""
+                fill
+                className={`object-cover ${r.imageFocus ?? ""}`}
+                sizes="(max-width: 768px) 100vw, 33vw"
+              />
+            </div>
+            <div className="p-6">
+              <p className="text-lg font-medium leading-snug tracking-tight md:text-xl">
+                «{r.text}»
+              </p>
+              <footer className="mt-5 text-sm font-semibold tracking-[0.12em] uppercase">
+                {r.author}
+                {r.context ? ` · ${r.context}` : ""}
+              </footer>
+            </div>
           </blockquote>
         ))}
       </div>

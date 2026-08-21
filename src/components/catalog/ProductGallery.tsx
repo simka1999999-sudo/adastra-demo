@@ -31,7 +31,7 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
             onClick={() => setActive(i)}
             aria-label={`Фото ${i + 1}`}
           >
-            <Image src={src} alt="" fill className="object-cover" sizes="80px" />
+            <Image src={src} alt="" fill className="object-cover object-[center_12%]" sizes="80px" />
           </button>
         ))}
       </div>
@@ -41,7 +41,7 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
           alt={alt}
           fill
           priority
-          className="object-cover transition-opacity duration-500"
+          className="object-cover object-[center_12%] transition-opacity duration-500"
           sizes="(max-width: 768px) 100vw, 50vw"
         />
       </div>

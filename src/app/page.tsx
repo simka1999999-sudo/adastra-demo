@@ -5,7 +5,7 @@ import { ProductCard } from "@/components/catalog/ProductCard";
 import { CategoryNav } from "@/components/catalog/CategoryNav";
 import { HeroBanner } from "@/components/HeroBanner";
 import { Reveal } from "@/components/Reveal";
-import { featuresCompact, useCases } from "../../content/home";
+import { featureDetails, featuresCompact, useCases } from "../../content/home";
 import { instagramHandle, instagramPosts } from "../../content/instagram";
 import { ozonReviews, ozonReviewsMeta } from "../../content/reviews";
 import { getFeaturedProducts, getFromPrice } from "@/lib/catalog-query";
@@ -45,7 +45,7 @@ export default function HomePage() {
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
-                Сценарии
+                Полная свобода движений
               </p>
               <h2 className="display mt-3 text-[clamp(2rem,4vw,3rem)] tracking-[-0.04em]">
                 Один комбинезон — разные зимы
@@ -66,7 +66,7 @@ export default function HomePage() {
                     src={item.image}
                     alt=""
                     fill
-                    className="object-cover object-top"
+                    className="object-cover object-[center_22%]"
                     sizes="(max-width: 768px) 50vw, 25vw"
                   />
                 </div>
@@ -89,50 +89,64 @@ export default function HomePage() {
         <div className="container-page">
           <Reveal>
             <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
-              Особенности
+              Коротко о главном
             </p>
             <h2 className="display mt-3 text-[clamp(1.8rem,3.5vw,2.6rem)] tracking-[-0.04em]">
-              Коротко о главном
+              Система тройного утепления
             </h2>
           </Reveal>
-          <dl className="mt-8 grid grid-cols-1 gap-px bg-line sm:grid-cols-2 lg:grid-cols-5">
-            {featuresCompact
-              .filter((f) => !f.image)
-              .map((f) => (
-                <div key={f.title} className="bg-bg px-4 py-5">
-                  <dt className="text-[0.65rem] font-semibold tracking-[0.16em] uppercase text-ink-muted">
-                    {f.title}
-                  </dt>
-                  <dd className="mt-2 text-lg font-semibold tracking-tight">
-                    {f.value}
-                  </dd>
-                </div>
-              ))}
-          </dl>
-          <div className="mt-px grid grid-cols-1 gap-px bg-line sm:grid-cols-2">
-            {featuresCompact
-              .filter((f) => f.image)
-              .map((f) => (
-                <div key={f.title} className="bg-bg">
-                  <div className="relative aspect-[5/4] overflow-hidden bg-ice sm:aspect-[4/3]">
+          <div className="mt-8 grid grid-cols-1 gap-px bg-line sm:grid-cols-2 lg:grid-cols-5">
+            {featuresCompact.map((f) => (
+              <div key={f.title} className="bg-bg">
+                {f.image ? (
+                  <div className="relative aspect-[4/5] overflow-hidden bg-ice sm:aspect-[3/4]">
                     <Image
-                      src={f.image!}
+                      src={f.image}
                       alt={`${f.title}: ${f.value}`}
                       fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 100vw, 50vw"
+                      className={`object-cover ${f.imageFocus ?? ""}`}
+                      sizes="(max-width: 640px) 100vw, 20vw"
                     />
                   </div>
-                  <div className="px-4 py-5">
-                    <p className="text-[0.65rem] font-semibold tracking-[0.16em] uppercase text-ink-muted">
-                      {f.title}
-                    </p>
-                    <p className="mt-2 text-lg font-semibold tracking-tight">
-                      {f.value}
-                    </p>
-                  </div>
+                ) : null}
+                <div className="px-4 py-5">
+                  <p className="text-[0.65rem] font-semibold tracking-[0.16em] uppercase text-ink-muted">
+                    {f.title}
+                  </p>
+                  <p className="mt-2 text-lg font-semibold tracking-tight">
+                    {f.value}
+                  </p>
                 </div>
-              ))}
+              </div>
+            ))}
+          </div>
+          <Reveal>
+            <h3 className="display mt-12 text-[clamp(1.5rem,3vw,2.1rem)] tracking-[-0.03em]">
+              Продумано до мелочей
+            </h3>
+          </Reveal>
+          <div className="mt-6 grid grid-cols-1 gap-px bg-line sm:grid-cols-2">
+            {featureDetails.map((f) => (
+              <div key={f.title} className="bg-bg">
+                <div className="relative aspect-[5/4] overflow-hidden bg-ice sm:aspect-[4/3]">
+                  <Image
+                    src={f.image}
+                    alt={`${f.title}: ${f.value}`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                  />
+                </div>
+                <div className="px-4 py-5">
+                  <p className="text-[0.65rem] font-semibold tracking-[0.16em] uppercase text-ink-muted">
+                    {f.title}
+                  </p>
+                  <p className="mt-2 text-lg font-semibold tracking-tight">
+                    {f.value}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -142,7 +156,7 @@ export default function HomePage() {
           <div className="mb-10">
             <div>
               <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
-                Хиты
+                Три модели
               </p>
               <h2 className="display mt-3 text-[clamp(2rem,4vw,3rem)] tracking-[-0.04em]">
                 Самые популярные комбинезоны
@@ -170,17 +184,17 @@ export default function HomePage() {
           <Reveal>
             <div className="mb-10">
               <div>
-                <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
-                  Ozon
-                </p>
-                <h2 className="display mt-3 text-[clamp(1.8rem,3.5vw,2.8rem)] tracking-[-0.04em]">
-                  {ozonReviewsMeta.totalLabel}
-                </h2>
-                <p className="mt-3 text-sm text-ink-muted">
-                  Средняя оценка {ozonReviewsMeta.averageRating} · более{" "}
-                  {ozonReviewsMeta.reviewsCountApprox.toLocaleString("ru-RU")}{" "}
-                  отзывов
-                </p>
+              <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
+                Отзывы
+              </p>
+              <h2 className="display mt-3 text-[clamp(1.8rem,3.5vw,2.8rem)] tracking-[-0.04em]">
+                {ozonReviewsMeta.totalLabel}
+              </h2>
+              <p className="mt-3 text-sm text-ink-muted">
+                Средняя оценка {ozonReviewsMeta.averageRating} · более{" "}
+                {ozonReviewsMeta.reviewsCountApprox.toLocaleString("ru-RU")}{" "}
+                отзывов на Ozon
+              </p>
               </div>
               <p className="mt-6">
                 <Link href="/reviews" className="chip">
@@ -189,21 +203,32 @@ export default function HomePage() {
               </p>
             </div>
           </Reveal>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-3">
             {ozonReviews.map((r) => (
               <blockquote
                 key={r.id}
-                className="border border-line bg-bg-elevated/70 p-5"
+                className="overflow-hidden border border-line bg-bg-elevated"
               >
-                <p className="text-sm leading-relaxed text-ink-muted">
-                  «{r.text}»
-                </p>
-                <footer className="mt-4 text-xs font-semibold tracking-[0.12em] uppercase">
-                  {r.author}
-                  {r.context ? (
-                    <span className="text-ink-muted"> · {r.context}</span>
-                  ) : null}
-                </footer>
+                <div className="relative aspect-[5/4] bg-ice">
+                  <Image
+                    src={r.image}
+                    alt=""
+                    fill
+                    className={`object-cover ${r.imageFocus ?? ""}`}
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
+                <div className="p-6">
+                  <p className="text-lg font-medium leading-snug tracking-tight md:text-xl">
+                    «{r.text}»
+                  </p>
+                  <footer className="mt-5 text-sm font-semibold tracking-[0.12em] uppercase">
+                    {r.author}
+                    {r.context ? (
+                      <span className="text-ink-muted"> · {r.context}</span>
+                    ) : null}
+                  </footer>
+                </div>
               </blockquote>
             ))}
           </div>

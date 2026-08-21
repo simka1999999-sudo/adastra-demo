@@ -1,6 +1,6 @@
 /**
  * Отзывы с Ozon (витрина). При появлении Seller API можно подтягивать автоматически.
- * Пока — курируемый блок + ссылка на магазин.
+ * Фото — макросы ткани и кроя, без чужих лиц.
  */
 export type OzonReview = {
   id: string;
@@ -8,10 +8,12 @@ export type OzonReview = {
   rating: number;
   text: string;
   context?: string;
+  image: string;
+  imageFocus?: string;
 };
 
 export const ozonReviewsMeta = {
-  totalLabel: "тысячи отзывов на Ozon",
+  totalLabel: "Более 1000 довольных клиентов",
   averageRating: 4.9,
   reviewsCountApprox: 2200,
 };
@@ -21,28 +23,25 @@ export const ozonReviews: OzonReview[] = [
     id: "r1",
     author: "Елена",
     rating: 5,
-    text: "Комбинезон очень тёплый, в −20 комфортно гулять с ребёнком. Размер подошёл по таблице.",
-    context: "Город · прогулки",
+    text: "В −20 комфортно гулять с ребёнком. Размер сел по таблице.",
+    context: "Город",
+    image: "/lookbook/detail-omniheat.jpg",
   },
   {
     id: "r2",
     author: "Мария",
     rating: 5,
-    text: "Брали в поездку — в машине и на остановках не мёрзнем, ткань плотная, выглядит стильно.",
+    text: "В поездке не мёрзнем, ткань плотная, выглядит стильно.",
     context: "Поездки",
+    image: "/lookbook/detail-seams.jpg",
   },
   {
     id: "r3",
     author: "Анна",
     rating: 5,
-    text: "Носили в горах: мембрана держит снег, капюшон удобный. Качество на уровне.",
+    text: "В горах мембрана держит снег. Капюшон удобный.",
     context: "Горы",
-  },
-  {
-    id: "r4",
-    author: "Ирина",
-    rating: 4,
-    text: "Посадка женская, не мешковато. Доставка Ozon быстрая, всё пришло аккуратно.",
-    context: "Ozon",
+    image: "/lookbook/hero-check.jpg",
+    imageFocus: "object-[center_82%]",
   },
 ];

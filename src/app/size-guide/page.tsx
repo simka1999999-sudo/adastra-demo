@@ -15,7 +15,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Как выбрать размер комбинезона ADASTRA",
   description:
-    "Таблица размеров комбинезона ADASTRA: S–XL, 44–50 RU, ростовки 158–176. Обхват груди, бёдер и рост.",
+    "Таблица размеров комбинезона ADASTRA: S–XL, 42–50 RU, ростовки 158–176. Обхват груди, бёдер и рост.",
   path: "/size-guide",
 });
 
@@ -33,7 +33,7 @@ export default function SizeGuidePage() {
           Как выбрать размер
         </h1>
         <p className="mt-4 text-ink-muted">
-          Снимите мерки и сверьте с сеткой: размер бренда S–XL (44–50 RU) и
+          Снимите мерки и сверьте с сеткой: размер бренда S–XL (42–50 RU) и
           ростовка 158–176. Если не уверены — напишите нам до заказа.
         </p>
       </header>

@@ -26,11 +26,24 @@ export function Header() {
   const isHome = pathname === "/";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    if (!isHome) {
+      setScrolled(true);
+      return;
+    }
+    const update = () => {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      const hero = document.getElementById("home-hero");
+      const heroGone = hero ? hero.getBoundingClientRect().bottom < 96 : false;
+      setScrolled(y > 48 || heroGone);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [isHome]);
 
   useEffect(() => {
     setOpen(false);
@@ -55,41 +68,41 @@ export function Header() {
             : "border-b border-transparent bg-transparent"
         }`}
       >
-        <div className="container-page flex min-h-[var(--nav-h)] items-center justify-between gap-1.5 py-3 sm:gap-3 lg:gap-6">
-          <div className="flex min-w-0 items-center gap-2 sm:gap-5">
-            <button
-              type="button"
-              className={`inline-flex min-h-10 min-w-10 items-center gap-2 px-1 text-sm font-semibold tracking-[0.12em] uppercase md:text-base ${tone}`}
-              aria-label="Меню"
-              aria-expanded={open}
-              aria-controls="side-nav"
-              onClick={() => setOpen(true)}
-            >
-              <span className="flex w-4 flex-col gap-1" aria-hidden>
-                <span className="block h-px w-full bg-current" />
-                <span className="block h-px w-full bg-current" />
-                <span className="block h-px w-full bg-current" />
-              </span>
-              <span className="hidden sm:inline">Меню</span>
-            </button>
-            <Link href="/" className="relative block h-8 w-32 sm:h-11 sm:w-56 md:h-12 md:w-72">
-              <Image
-                src={
-                  solid
-                    ? "/brand/logo-wordmark-dark.png"
-                    : "/brand/logo-wordmark-light.png"
-                }
-                alt="ADASTRA — на главную"
-                fill
-                className="object-contain object-left"
-                sizes="(max-width: 640px) 128px, 288px"
-                priority
-              />
-            </Link>
-          </div>
+        <div className="container-page relative flex min-h-[3.75rem] items-center justify-between gap-2 py-3 md:min-h-[4.75rem]">
+          <button
+            type="button"
+            className={`relative z-10 inline-flex size-10 shrink-0 items-center justify-center ${tone}`}
+            aria-label="Меню"
+            aria-expanded={open}
+            aria-controls="side-nav"
+            onClick={() => setOpen(true)}
+          >
+            <span className="flex w-4 flex-col gap-1" aria-hidden>
+              <span className="block h-px w-full bg-current" />
+              <span className="block h-px w-full bg-current" />
+              <span className="block h-px w-full bg-current" />
+            </span>
+          </button>
+          <Link
+            href="/"
+            className="pointer-events-auto absolute left-1/2 top-1/2 z-[1] block h-11 w-44 -translate-x-1/2 -translate-y-1/2 sm:h-12 sm:w-60 md:h-14 md:w-72"
+          >
+            <Image
+              src={
+                solid
+                  ? "/brand/logo-wordmark-dark.png"
+                  : "/brand/logo-wordmark-light.png"
+              }
+              alt="ADASTRA — на главную"
+              fill
+              className="object-contain object-center"
+              sizes="(max-width: 640px) 176px, 288px"
+              priority
+            />
+          </Link>
 
-          <div className={`flex shrink-0 items-center gap-0.5 sm:gap-4 ${tone}`}>
-            <div className="hidden items-center gap-3 md:flex">
+          <div className={`relative z-10 flex shrink-0 items-center justify-end gap-0.5 sm:gap-3 ${tone}`}>
+            <div className="hidden items-center gap-3 min-[1360px]:flex">
               <div className="text-right">
                 <a
                   href={`tel:${siteConfig.phoneRaw}`}
@@ -101,6 +114,8 @@ export function Header() {
                   {siteConfig.hours}
                 </p>
               </div>
+            </div>
+            <div className="hidden md:block">
               <MessengerLinks />
             </div>
             <HeaderSearch
@@ -131,7 +146,7 @@ export function Header() {
                   strokeWidth="1.5"
                 />
               </svg>
-              <span className="hidden sm:inline">Корзина</span>
+              <span className="hidden lg:inline">Корзина</span>
               {count > 0 ? (
                 <span className="tabular-nums">{count}</span>
               ) : (
@@ -140,17 +155,19 @@ export function Header() {
             </Link>
           </div>
         </div>
-        <div className={`md:hidden ${tone}`}>
-          <div className="container-page flex flex-col gap-1.5 pb-2">
-            <a
-              href={`tel:${siteConfig.phoneRaw}`}
-              className="text-[0.8125rem] font-semibold tabular-nums"
-            >
-              {formatPhoneDisplay()}
-            </a>
-            <MessengerLinks />
+        {!scrolled ? (
+          <div className={`md:hidden ${tone}`}>
+            <div className="container-page flex flex-col gap-1.5 pb-2">
+              <a
+                href={`tel:${siteConfig.phoneRaw}`}
+                className="text-[0.8125rem] font-semibold tabular-nums"
+              >
+                {formatPhoneDisplay()}
+              </a>
+              <MessengerLinks />
+            </div>
           </div>
-        </div>
+        ) : null}
       </header>
 
       <div

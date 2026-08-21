@@ -10,7 +10,7 @@ export const useCases: UseCase[] = [
     id: "city",
     title: "Город",
     text: "На работу, в метро и на выходные — тёплый силуэт без лишнего объёма.",
-    image: "/lookbook/scene-city.jpg",
+    image: "/lookbook/hero-check.jpg",
   },
   {
     id: "trips",
@@ -36,22 +36,51 @@ export type FeatureCompact = {
   title: string;
   value: string;
   image?: string;
+  imageFocus?: string;
 };
 
 export const featuresCompact: FeatureCompact[] = [
-  { title: "Ткань", value: "непромокаемая мембрана 12 000 мм / 7000 г/м²" },
-  { title: "Режим", value: "от −5 до −30 °C" },
-  { title: "Утеплитель", value: "Thinsulate — без лишнего объёма" },
-  { title: "Размеры", value: "44–50 RU" },
-  { title: "Рост", value: "от 155 до 178 см" },
   {
-    title: "Подкладка",
-    value: "Omniheat — на 20% теплее обычной",
+    title: "Ткань",
+    value: "мембрана 12 000 мм / 7000 г/м² — защита от ветра и снега",
+    image: "/lookbook/hero-check.jpg",
+    imageFocus: "object-[center_28%]",
+  },
+  {
+    title: "Режим",
+    value: "от −5 до −30 °C",
+    image: "/lookbook/scene-mountains.jpg",
+    imageFocus: "object-[center_40%]",
+  },
+  {
+    title: "Утеплитель",
+    value: "Thinsulate — максимум тепла без лишнего объёма",
+    image: "/lookbook/hero-leo.jpg",
+    imageFocus: "object-[center_22%]",
+  },
+  {
+    title: "Размеры",
+    value: "42–50 RU",
+    image: "/lookbook/scene-kids.jpg",
+    imageFocus: "object-[center_18%]",
+  },
+  {
+    title: "Рост",
+    value: "от 155 до 178 см",
+    image: "/lookbook/hero-crane.jpg",
+    imageFocus: "object-[center_12%]",
+  },
+];
+
+export const featureDetails = [
+  {
+    title: "Подкладка Omni-Heat",
+    value: "на 20% теплее обычной",
     image: "/lookbook/detail-omniheat.jpg",
   },
   {
-    title: "Швы",
-    value: "проклеены",
+    title: "Проклеенные швы",
+    value: "не пропускают влагу",
     image: "/lookbook/detail-seams.jpg",
   },
 ];
