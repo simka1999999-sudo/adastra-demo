@@ -2,10 +2,10 @@
 
 Новый интернет-магазин бренда ADASTRA на Next.js: каталог, корзина, оформление, ЮKassa, SEO под Яндекс.
 
-**Демо (GitHub Pages, закрыто от индексации):**
-https://simka1999999-sudo.github.io/adastra-demo/
+**Рабочая витрина (VPS Beget, индекс закрыт):**
+https://gatidopike.beget.app/
 
-На статическом демо корзина работает в браузере, оплата ЮKassa и запись заказов — нет (нужен Node-сервер).
+GitHub Pages отключён. Боевой `adastrashop.com` пока не переключали.
 
 ## Стек
 

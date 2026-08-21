@@ -49,11 +49,10 @@ WantedBy=multi-user.target
 
 Пока нет доступа к Timeweb — локально: `npm run dev`.
 
-## GitHub Pages (демо-витрина)
+## Витрина
 
-Публичное демо: https://simka1999999-sudo.github.io/adastra-demo/
+Сейчас смотрим на VPS: https://gatidopike.beget.app/  
+Индекс закрыт (`Disallow: /`, noindex). В Яндекс.Вебмастер техдомен не добавлять.  
+`adastrashop.com` на этот сервер не переключать, пока не скажут.
 
-Сборка: `npm run build:pages` (статический export, `noindex`, без API).
-CI: `.github/workflows/pages.yml` на ветке `main`.
-
-Не добавлять демо в Яндекс.Вебмастер. Оплата и webhook ЮKassa на Pages не работают.
+GitHub Pages снят: workflow выключен, `github.io/adastra-demo` отдаёт 404. Статический export (`npm run build:pages`) оставляем на крайний случай, на push больше не публикуем.
