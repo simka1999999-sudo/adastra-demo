@@ -13,6 +13,22 @@ export async function middleware(request: NextRequest) {
   const isLogin =
     pathname === "/admin/login" || pathname === "/api/admin/login";
 
+  const isAccountPublic =
+    pathname === "/account/login" ||
+    pathname === "/account/register" ||
+    pathname === "/account/forgot" ||
+    pathname === "/account/reset" ||
+    pathname === "/account/find";
+  if (
+    pathname.startsWith("/account") &&
+    !isAccountPublic &&
+    !request.cookies.get("adastra_customer")?.value
+  ) {
+    const login = new URL("/account/login", request.url);
+    login.searchParams.set("next", `${pathname}${request.nextUrl.search}`);
+    return NextResponse.redirect(login);
+  }
+
   if ((isAdminApi || isAdminUi) && !isLogin) {
     if (process.env.NEXT_PUBLIC_STATIC_DEMO === "true") {
       if (isAdminApi) {
@@ -42,6 +58,9 @@ export async function middleware(request: NextRequest) {
     response.headers.set("X-Robots-Tag", "noindex, follow");
   }
   if (isAdminUi) {
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
+  if (pathname.startsWith("/account")) {
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
   }
   return response;

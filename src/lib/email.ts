@@ -45,3 +45,21 @@ export async function notifyManagerAboutOrder(order: OrderMail): Promise<void> {
   console.info("[order-email:smtp-pending]", { to, subject: `Заказ #${order.number}` });
   console.info(lines.join("\n"));
 }
+
+export async function notifyCustomerEmail(input: {
+  to: string;
+  subject: string;
+  text: string;
+}): Promise<void> {
+  const host = process.env.SMTP_HOST;
+  if (!host) {
+    console.info("[customer-email]", input.subject, input.to);
+    console.info(input.text);
+    return;
+  }
+  console.info("[customer-email:smtp-pending]", {
+    to: input.to,
+    subject: input.subject,
+  });
+  console.info(input.text);
+}

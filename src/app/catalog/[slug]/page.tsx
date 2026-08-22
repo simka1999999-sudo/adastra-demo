@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AddToCartForm } from "@/components/catalog/AddToCartForm";
+import { WishlistButton } from "@/components/account/WishlistButton";
 import { CategoryView } from "@/components/catalog/CategoryView";
 import { ProductGallery } from "@/components/catalog/ProductGallery";
 import { ProductCard } from "@/components/catalog/ProductCard";
@@ -149,6 +150,9 @@ export default async function CatalogSlugPage({ params }: Props) {
           </p>
           <div className="mt-8">
             <AddToCartForm product={product} />
+            <div className="mt-3">
+              <WishlistButton productId={product.id} slug={product.slug} />
+            </div>
           </div>
           {colorSiblings.length ? (
             <div className="mt-6">

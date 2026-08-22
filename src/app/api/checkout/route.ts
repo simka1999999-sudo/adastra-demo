@@ -6,6 +6,14 @@ import { notifyManagerAboutOrder } from "@/lib/email";
 import { createYooKassaPayment, isYooKassaConfigured } from "@/lib/yookassa";
 import { siteConfig } from "@/lib/site";
 import type { CartItem } from "@/lib/types";
+import {
+  applyCustomerCookies,
+  attachOrdersByEmail,
+  createSession,
+  getCurrentCustomer,
+} from "@/lib/customer-auth";
+import { hashPassword } from "@/lib/password";
+import { normalizePhone } from "@/lib/phone";
 
 const schema = z.object({
   name: z.string().min(2),
@@ -18,6 +26,8 @@ const schema = z.object({
   deliveryPrice: z.number().int().min(0),
   paymentOption: z.enum(["cod", "online"]),
   createAccount: z.boolean().optional().default(false),
+  password: z.string().min(8).max(72).optional(),
+  saveAddress: z.boolean().optional().default(false),
   items: z
     .array(
       z.object({
@@ -42,30 +52,98 @@ export async function POST(request: Request) {
     const goodsTotal = cartTotal(items);
     const total = goodsTotal + data.deliveryPrice;
 
-    let customerId: string | undefined;
-    if (data.createAccount) {
-      const email = data.email.toLowerCase();
+    const email = data.email.toLowerCase();
+    const phone = normalizePhone(data.phone);
+    const sessionCustomer = await getCurrentCustomer();
+    let customerId = sessionCustomer?.id;
+
+    if (sessionCustomer) {
+      await prisma.customer.update({
+        where: { id: sessionCustomer.id },
+        data: {
+          name: data.name,
+          phone,
+          city: data.city,
+        },
+      });
+    } else if (data.createAccount) {
+      if (!data.password) {
+        return NextResponse.json(
+          { ok: false, error: "Для кабинета задайте пароль не короче 8 символов" },
+          { status: 400 },
+        );
+      }
       const existing = await prisma.customer.findUnique({ where: { email } });
-      if (existing) {
-        await prisma.customer.update({
-          where: { id: existing.id },
-          data: {
-            name: data.name,
-            phone: data.phone,
-            city: data.city,
-          },
+      if (existing?.passwordHash) {
+        return NextResponse.json(
+          { ok: false, error: "Этот email уже зарегистрирован. Войдите в кабинет." },
+          { status: 409 },
+        );
+      }
+      const passwordHash = await hashPassword(data.password);
+      const customer = existing
+        ? await prisma.customer.update({
+            where: { id: existing.id },
+            data: {
+              name: data.name,
+              phone,
+              city: data.city,
+              passwordHash,
+            },
+          })
+        : await prisma.customer.create({
+            data: {
+              name: data.name,
+              phone,
+              email,
+              city: data.city,
+              passwordHash,
+            },
+          });
+      customerId = customer.id;
+      await attachOrdersByEmail(customer.id, email);
+    }
+
+    const newSession =
+      !sessionCustomer && customerId && data.createAccount && data.password
+        ? await createSession(customerId)
+        : null;
+
+    const finish = (body: Record<string, unknown>) => {
+      const res = NextResponse.json(body);
+      if (!newSession) return res;
+      return applyCustomerCookies(res, newSession.token, newSession.expiresAt);
+    };
+
+    if (customerId && data.saveAddress) {
+      const same = await prisma.address.findFirst({
+        where: {
+          customerId,
+          city: data.city,
+          line: data.address,
+        },
+      });
+      await prisma.address.updateMany({
+        where: { customerId },
+        data: { isDefault: false },
+      });
+      if (same) {
+        await prisma.address.update({
+          where: { id: same.id },
+          data: { isDefault: true, recipient: data.name, phone },
         });
-        customerId = existing.id;
       } else {
-        const customer = await prisma.customer.create({
+        await prisma.address.create({
           data: {
-            name: data.name,
-            phone: data.phone,
-            email,
+            customerId,
+            title: "Последний заказ",
+            recipient: data.name,
+            phone,
             city: data.city,
+            line: data.address,
+            isDefault: true,
           },
         });
-        customerId = customer.id;
       }
     }
 
@@ -79,8 +157,8 @@ export async function POST(request: Request) {
       data: {
         number,
         name: data.name,
-        phone: data.phone,
-        email: data.email,
+        phone,
+        email,
         address: data.address,
         comment: data.comment,
         deliveryType: data.deliveryType,
@@ -154,14 +232,15 @@ export async function POST(request: Request) {
         },
       });
 
-      return NextResponse.json({
+      return finish({
         ok: true,
         orderId: order.id,
+        orderNumber: order.number,
         paymentUrl,
       });
     }
 
-    return NextResponse.json({ ok: true, orderId: order.id });
+    return finish({ ok: true, orderId: order.id, orderNumber: order.number });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(

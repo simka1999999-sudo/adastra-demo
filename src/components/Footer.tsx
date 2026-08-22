@@ -96,11 +96,13 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link
-                href="/account/register"
-                className="transition-colors hover:text-white"
-              >
-                Регистрация
+              <Link href="/account" className="transition-colors hover:text-white">
+                Личный кабинет
+              </Link>
+            </li>
+            <li>
+              <Link href="/account/find" className="transition-colors hover:text-white">
+                Найти заказ
               </Link>
             </li>
           </ul>

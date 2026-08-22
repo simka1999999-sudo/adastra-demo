@@ -11,6 +11,7 @@ import { buyerNav, companyNav } from "@/lib/nav";
 import { BrandStar } from "@/components/BrandStar";
 import { HeaderSearch } from "@/components/HeaderSearch";
 import { MessengerLinks } from "@/components/MessengerLinks";
+import { AccountHeaderLink } from "@/components/account/AccountHeaderLink";
 import { formatPhoneDisplay, siteConfig, socialNav } from "@/lib/site";
 
 function navActive(pathname: string, href: string) {
@@ -122,6 +123,7 @@ export function Header() {
               className="hidden w-44 lg:flex"
               inputId="header-search"
             />
+            <AccountHeaderLink toneClass={tone} />
             <Link
               href="/catalog"
               className="inline-flex size-10 items-center justify-center lg:hidden"

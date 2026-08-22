@@ -2,26 +2,27 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { formatPhoneDisplay, siteConfig, withBasePath } from "@/lib/site";
+import { useRouter } from "next/navigation";
+import { formatPhoneDisplay, siteConfig } from "@/lib/site";
+import { accountRequest } from "@/components/account/api";
 
 export function RegisterForm() {
+  const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
-  const [done, setDone] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setPending(true);
     setError("");
     const form = new FormData(e.currentTarget);
-    const payload = {
-      name: String(form.get("name") || ""),
-      phone: String(form.get("phone") || ""),
-      email: String(form.get("email") || ""),
-      city: String(form.get("city") || ""),
-      marketingOptIn: form.get("marketing") === "on",
-    };
-
+    const password = String(form.get("password") || "");
+    const confirm = String(form.get("confirm") || "");
+    if (password !== confirm) {
+      setError("Пароли не совпадают");
+      setPending(false);
+      return;
+    }
     if (siteConfig.isStaticDemo) {
       setError(
         `Регистрация на демо отключена. Позвоните ${formatPhoneDisplay()} или напишите в Telegram.`,
@@ -29,37 +30,24 @@ export function RegisterForm() {
       setPending(false);
       return;
     }
-
     try {
-      const res = await fetch(withBasePath("/api/account/register"), {
+      await accountRequest("/api/account/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          name: String(form.get("name") || ""),
+          phone: String(form.get("phone") || ""),
+          email: String(form.get("email") || ""),
+          password,
+          city: String(form.get("city") || ""),
+          marketingOptIn: form.get("marketing") === "on",
+        }),
       });
-      const data = (await res.json()) as { ok?: boolean; error?: string };
-      if (!res.ok || !data.ok) {
-        throw new Error(data.error || "Не удалось зарегистрироваться");
-      }
-      setDone(true);
+      router.push("/account");
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Ошибка");
       setPending(false);
     }
-  }
-
-  if (done) {
-    return (
-      <div className="border border-line bg-bg-elevated p-6 md:p-8">
-        <h2 className="text-xl">Спасибо!</h2>
-        <p className="mt-3 text-sm text-ink-muted">
-          Данные сохранены. Мы свяжемся при необходимости и учтём профиль при
-          следующих заказах.
-        </p>
-        <Link href="/catalog" className="btn mt-6 inline-flex">
-          В каталог
-        </Link>
-      </div>
-    );
   }
 
   return (
@@ -114,6 +102,34 @@ export function RegisterForm() {
           autoComplete="address-level2"
         />
       </div>
+      <div>
+        <label className="label" htmlFor="password">
+          Пароль
+        </label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          className="field"
+          autoComplete="new-password"
+          minLength={8}
+          required
+        />
+      </div>
+      <div>
+        <label className="label" htmlFor="confirm">
+          Повторите пароль
+        </label>
+        <input
+          id="confirm"
+          name="confirm"
+          type="password"
+          className="field"
+          autoComplete="new-password"
+          minLength={8}
+          required
+        />
+      </div>
       <label className="flex items-start gap-2 text-sm text-ink-muted">
         <input type="checkbox" name="marketing" className="mt-1" />
         Хочу получать новости о коллекциях и акциях
@@ -127,8 +143,14 @@ export function RegisterForm() {
       </p>
       {error ? <p className="text-sm text-danger">{error}</p> : null}
       <button type="submit" className="btn" disabled={pending}>
-        {pending ? "Сохраняем…" : "Зарегистрироваться"}
+        {pending ? "Создаём кабинет…" : "Зарегистрироваться"}
       </button>
+      <p className="text-sm text-ink-muted">
+        Уже есть кабинет?{" "}
+        <Link href="/account/login" className="underline underline-offset-4">
+          Войти
+        </Link>
+      </p>
     </form>
   );
 }

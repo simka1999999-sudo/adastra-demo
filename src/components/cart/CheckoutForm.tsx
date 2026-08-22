@@ -25,15 +25,27 @@ type Quote = {
   note?: string;
 };
 
-export function CheckoutForm() {
+export function CheckoutForm({
+  prefill,
+}: {
+  prefill?: {
+    loggedIn: boolean;
+    name: string;
+    phone: string;
+    email: string;
+    city: string;
+    address: string;
+  };
+}) {
   const router = useRouter();
   const { items, total, ready, clear } = useCart();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [carrier, setCarrier] = useState<DeliveryCarrier>("cdek");
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState(prefill?.city ?? "");
   const [quote, setQuote] = useState<Quote | null>(null);
   const [quoteLoading, setQuoteLoading] = useState(false);
+  const [createAccount, setCreateAccount] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -92,6 +104,8 @@ export function CheckoutForm() {
       deliveryPrice,
       paymentOption: String(form.get("paymentOption") || "cod"),
       createAccount: form.get("createAccount") === "on",
+      password: String(form.get("password") || "") || undefined,
+      saveAddress: form.get("saveAddress") === "on",
       items,
     };
 
@@ -143,6 +157,25 @@ export function CheckoutForm() {
   return (
     <form onSubmit={onSubmit} className="grid gap-10 lg:grid-cols-[1fr_340px]">
       <div className="space-y-5">
+        {prefill?.loggedIn ? (
+          <p className="text-sm text-ink-muted">
+            Данные из кабинета.{" "}
+            <Link href="/account" className="underline underline-offset-4">
+              Изменить профиль
+            </Link>
+          </p>
+        ) : (
+          <p className="text-sm text-ink-muted">
+            Уже покупали?{" "}
+            <Link
+              href="/account/login?next=/checkout"
+              className="underline underline-offset-4"
+            >
+              Войти
+            </Link>
+            , чтобы не заполнять заново.
+          </p>
+        )}
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
             <label className="label" htmlFor="name">
@@ -153,6 +186,7 @@ export function CheckoutForm() {
               name="name"
               className="field"
               autoComplete="name"
+              defaultValue={prefill?.name}
               required
             />
           </div>
@@ -167,6 +201,7 @@ export function CheckoutForm() {
               inputMode="tel"
               className="field"
               autoComplete="tel"
+              defaultValue={prefill?.phone}
               required
             />
           </div>
@@ -181,6 +216,7 @@ export function CheckoutForm() {
             type="email"
             className="field"
             autoComplete="email"
+            defaultValue={prefill?.email}
             required
           />
         </div>
@@ -208,6 +244,7 @@ export function CheckoutForm() {
             name="address"
             className="field"
             autoComplete="street-address"
+            defaultValue={prefill?.address}
             required
           />
         </div>
@@ -283,12 +320,41 @@ export function CheckoutForm() {
           </label>
         </fieldset>
 
-        <label className="choice items-center">
-          <input type="checkbox" name="createAccount" className="mt-0.5" />
-          <span className="text-sm">
-            Сохранить данные для следующих заказов
-          </span>
-        </label>
+        {prefill?.loggedIn ? (
+          <label className="choice items-center">
+            <input type="checkbox" name="saveAddress" className="mt-0.5" defaultChecked />
+            <span className="text-sm">Сохранить адрес в кабинете</span>
+          </label>
+        ) : (
+          <>
+            <label className="choice items-center">
+              <input
+                type="checkbox"
+                name="createAccount"
+                className="mt-0.5"
+                checked={createAccount}
+                onChange={(e) => setCreateAccount(e.target.checked)}
+              />
+              <span className="text-sm">Создать кабинет для следующих заказов</span>
+            </label>
+            {createAccount ? (
+              <div>
+                <label className="label" htmlFor="password">
+                  Пароль для кабинета
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  className="field"
+                  autoComplete="new-password"
+                  minLength={8}
+                  required
+                />
+              </div>
+            ) : null}
+          </>
+        )}
 
         {siteConfig.isStaticDemo ? (
           <p className="border border-line bg-bg-elevated p-4 text-sm text-ink-muted">

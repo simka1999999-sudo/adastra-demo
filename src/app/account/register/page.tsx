@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { RegisterForm } from "@/components/account/RegisterForm";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { getCurrentCustomer } from "@/lib/customer-auth";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -12,7 +14,12 @@ export const metadata: Metadata = buildPageMetadata({
   follow: false,
 });
 
-export default function RegisterPage() {
+export const dynamic = "force-dynamic";
+
+export default async function RegisterPage() {
+  const customer = await getCurrentCustomer();
+  if (customer) redirect("/account");
+
   return (
     <div className="container-page py-10 md:py-14">
       <Breadcrumbs
@@ -26,8 +33,7 @@ export default function RegisterPage() {
           Регистрация
         </h1>
         <p className="mt-4 text-ink-muted">
-          Оставьте контакты — так проще оформлять заказы и получать помощь с
-          размером.
+          Создайте кабинет: заказы, избранное, адреса и подбор размера.
         </p>
       </header>
       <RegisterForm />

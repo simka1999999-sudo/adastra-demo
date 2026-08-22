@@ -17,7 +17,7 @@ export const companyNav: NavItem[] = [
   { href: "/about", label: "О бренде" },
   { href: "/partners", label: "Партнёрам" },
   { href: "/offer", label: "Публичная оферта" },
-  { href: "/account/register", label: "Регистрация" },
+  { href: "/account", label: "Личный кабинет" },
 ];
 
 /** Плоский список — для активных состояний и старых ссылок. */
