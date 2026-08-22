@@ -377,12 +377,12 @@ summary::-webkit-details-marker {
 }
 
 .hero-media {
-  transform: scale(1.02);
-  transform-origin: center center;
+  transform: none;
+  filter: contrast(1.06) saturate(1.05);
 }
 
 .hero-media.kenburns-active {
-  animation: kenburns 5.2s var(--ease-out) both;
+  animation: none;
 }
 
 @keyframes kenburns {
