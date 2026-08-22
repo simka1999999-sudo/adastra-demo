@@ -31,9 +31,13 @@ export function DeleteProductButton({ id, title }: { id: string; title: string }
 
   return (
     <div>
+      <p className="max-w-xl text-sm text-ink-muted">
+        Товар исчезнет из каталога. Старые ссылки перестанут открываться. Фото,
+        которые вы загружали сами, тоже сотрутся.
+      </p>
       <button
         type="button"
-        className="text-sm text-danger underline underline-offset-4"
+        className="mt-4 text-sm text-danger underline underline-offset-4"
         disabled={pending}
         onClick={() => void onDelete()}
       >

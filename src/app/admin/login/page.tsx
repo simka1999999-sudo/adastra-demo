@@ -37,6 +37,10 @@ export default async function AdminLoginPage() {
   return (
     <div className="container-page py-12">
       <h1 className="display mb-6 text-3xl">Вход</h1>
+      <p className="mb-4 max-w-sm text-sm text-ink-muted">
+        Пароль только для этой страницы с товарами. Покупатели в каталог
+        заходят без него.
+      </p>
       <AdminLoginForm />
     </div>
   );

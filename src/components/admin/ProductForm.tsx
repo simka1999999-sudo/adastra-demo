@@ -8,6 +8,8 @@ import { isUploadedPhoto, productPhotoStatus } from "@/lib/products";
 import { DEFAULT_SIZE_LABELS } from "@/lib/catalog-defaults";
 import { parseOzonId } from "@/lib/ozon-id";
 import { withBasePath } from "@/lib/site";
+import { ADMIN_FIELD_HINTS } from "@/lib/admin-field-hints";
+import { FieldHint } from "@/components/admin/FieldHint";
 
 type Props = { product?: Product };
 
@@ -121,13 +123,15 @@ export function ProductForm({ product }: Props) {
   return (
     <form onSubmit={onSubmit} className="grid gap-8 lg:grid-cols-[1fr_280px]">
       <div className="space-y-5">
-        <p className="rounded-sm border border-line bg-ice/60 p-4 text-sm text-ink-muted">
-          Цвет, название и фото — одна карточка. Не оставляйте lookbook, если
-          цвет другой: загрузите снимки именно этой модели.
+        <p className="border border-line bg-ice/60 p-4 text-sm leading-relaxed text-ink-muted">
+          Карточка = одна модель одного цвета. Название, цена и фото попадают
+          в каталог. Под каждым полем — куда это увидит покупатель.
         </p>
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label className="label" htmlFor="masterSku">Артикул</label>
+            <label className="label" htmlFor="masterSku">
+              {ADMIN_FIELD_HINTS.masterSku.label}
+            </label>
             <input
               id="masterSku"
               name="masterSku"
@@ -136,9 +140,12 @@ export function ProductForm({ product }: Props) {
               defaultValue={product?.masterSku ?? ""}
               readOnly={Boolean(product)}
             />
+            <FieldHint>{ADMIN_FIELD_HINTS.masterSku.form}</FieldHint>
           </div>
           <div>
-            <label className="label" htmlFor="shortTitle">Короткое имя</label>
+            <label className="label" htmlFor="shortTitle">
+              {ADMIN_FIELD_HINTS.shortTitle.label}
+            </label>
             <input
               id="shortTitle"
               name="shortTitle"
@@ -147,9 +154,12 @@ export function ProductForm({ product }: Props) {
               value={shortTitle}
               onChange={(e) => setShortTitle(e.target.value)}
             />
+            <FieldHint>{ADMIN_FIELD_HINTS.shortTitle.form}</FieldHint>
           </div>
           <div>
-            <label className="label" htmlFor="color">Цвет</label>
+            <label className="label" htmlFor="color">
+              {ADMIN_FIELD_HINTS.color.label}
+            </label>
             <input
               id="color"
               name="color"
@@ -159,9 +169,12 @@ export function ProductForm({ product }: Props) {
               onChange={(e) => setColor(e.target.value)}
               placeholder="черный"
             />
+            <FieldHint>{ADMIN_FIELD_HINTS.color.form}</FieldHint>
           </div>
           <div>
-            <label className="label" htmlFor="category">Категория</label>
+            <label className="label" htmlFor="category">
+              {ADMIN_FIELD_HINTS.category.label}
+            </label>
             <select
               id="category"
               name="category"
@@ -174,77 +187,219 @@ export function ProductForm({ product }: Props) {
               <option value="coats">Пальто</option>
               <option value="pants">Брюки</option>
             </select>
+            <FieldHint>{ADMIN_FIELD_HINTS.category.form}</FieldHint>
           </div>
           <div>
-            <label className="label" htmlFor="price">Цена, ₽</label>
-            <input id="price" name="price" className="field" type="number" min={1} required defaultValue={product?.price ?? 23990} />
+            <label className="label" htmlFor="price">
+              {ADMIN_FIELD_HINTS.price.label}, ₽
+            </label>
+            <input
+              id="price"
+              name="price"
+              className="field"
+              type="number"
+              min={1}
+              required
+              defaultValue={product?.price ?? 23990}
+            />
+            <FieldHint>{ADMIN_FIELD_HINTS.price.form}</FieldHint>
           </div>
           <div>
-            <label className="label" htmlFor="oldPrice">Старая цена</label>
-            <input id="oldPrice" name="oldPrice" className="field" type="number" min={1} defaultValue={product?.oldPrice ?? ""} />
+            <label className="label" htmlFor="oldPrice">
+              {ADMIN_FIELD_HINTS.oldPrice.label}
+            </label>
+            <input
+              id="oldPrice"
+              name="oldPrice"
+              className="field"
+              type="number"
+              min={1}
+              defaultValue={product?.oldPrice ?? ""}
+            />
+            <FieldHint>{ADMIN_FIELD_HINTS.oldPrice.form}</FieldHint>
           </div>
         </div>
         <p className="text-sm">
-          На витрине: <span className="font-semibold">{previewTitle || "—"}</span>
+          На витрине покупатель увидит:{" "}
+          <span className="font-semibold">{previewTitle || "—"}</span>
         </p>
         <div>
-          <label className="label" htmlFor="description">Описание</label>
-          <textarea id="description" name="description" className="field min-h-28" defaultValue={product?.description ?? ""} />
+          <label className="label" htmlFor="description">
+            {ADMIN_FIELD_HINTS.description.label}
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            className="field min-h-28"
+            defaultValue={product?.description ?? ""}
+          />
+          <FieldHint>{ADMIN_FIELD_HINTS.description.form}</FieldHint>
         </div>
         <div>
-          <label className="label" htmlFor="features">Особенности (каждая с новой строки)</label>
-          <textarea id="features" name="features" className="field min-h-28" defaultValue={(product?.features ?? []).join("\n")} />
+          <label className="label" htmlFor="features">
+            {ADMIN_FIELD_HINTS.features.label}
+          </label>
+          <textarea
+            id="features"
+            name="features"
+            className="field min-h-28"
+            defaultValue={(product?.features ?? []).join("\n")}
+          />
+          <FieldHint>{ADMIN_FIELD_HINTS.features.form}</FieldHint>
         </div>
         <div>
-          <label className="label" htmlFor="sizes">Размеры (один на строку)</label>
+          <label className="label" htmlFor="sizes">
+            {ADMIN_FIELD_HINTS.sizes.label}
+          </label>
           <textarea
             id="sizes"
             name="sizes"
             className="field min-h-32 font-mono text-sm"
             required
-            defaultValue={(product?.sizes ?? []).map((s) => s.label).join("\n") || DEFAULT_SIZE_LABELS.join("\n")}
+            defaultValue={
+              (product?.sizes ?? []).map((s) => s.label).join("\n") ||
+              DEFAULT_SIZE_LABELS.join("\n")
+            }
           />
+          <FieldHint>{ADMIN_FIELD_HINTS.sizes.form}</FieldHint>
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label className="label" htmlFor="materials">Материалы</label>
-            <textarea id="materials" name="materials" className="field min-h-24" defaultValue={product?.materials ?? ""} />
+            <label className="label" htmlFor="materials">
+              {ADMIN_FIELD_HINTS.materials.label}
+            </label>
+            <textarea
+              id="materials"
+              name="materials"
+              className="field min-h-24"
+              defaultValue={product?.materials ?? ""}
+            />
+            <FieldHint>{ADMIN_FIELD_HINTS.materials.form}</FieldHint>
           </div>
           <div>
-            <label className="label" htmlFor="care">Уход</label>
-            <textarea id="care" name="care" className="field min-h-24" defaultValue={product?.care ?? ""} />
+            <label className="label" htmlFor="care">
+              {ADMIN_FIELD_HINTS.care.label}
+            </label>
+            <textarea
+              id="care"
+              name="care"
+              className="field min-h-24"
+              defaultValue={product?.care ?? ""}
+            />
+            <FieldHint>{ADMIN_FIELD_HINTS.care.form}</FieldHint>
           </div>
           <div>
-            <label className="label" htmlFor="insulation">Утеплитель</label>
-            <input id="insulation" name="insulation" className="field" defaultValue={product?.insulation ?? ""} />
+            <label className="label" htmlFor="insulation">
+              {ADMIN_FIELD_HINTS.insulation.label}
+            </label>
+            <input
+              id="insulation"
+              name="insulation"
+              className="field"
+              defaultValue={product?.insulation ?? ""}
+            />
+            <FieldHint>{ADMIN_FIELD_HINTS.insulation.form}</FieldHint>
           </div>
           <div>
-            <label className="label" htmlFor="temperature">Температура</label>
-            <input id="temperature" name="temperature" className="field" defaultValue={product?.temperature ?? "от -5°С до -30°С"} />
+            <label className="label" htmlFor="temperature">
+              {ADMIN_FIELD_HINTS.temperature.label}
+            </label>
+            <input
+              id="temperature"
+              name="temperature"
+              className="field"
+              defaultValue={product?.temperature ?? "от -5°С до -30°С"}
+            />
+            <FieldHint>{ADMIN_FIELD_HINTS.temperature.form}</FieldHint>
           </div>
           <div>
-            <label className="label" htmlFor="collection">Коллекция</label>
-            <input id="collection" name="collection" className="field" required defaultValue={product?.collection ?? "Женская коллекция"} />
+            <label className="label" htmlFor="collection">
+              {ADMIN_FIELD_HINTS.collection.label}
+            </label>
+            <input
+              id="collection"
+              name="collection"
+              className="field"
+              required
+              defaultValue={product?.collection ?? "Женская коллекция"}
+            />
+            <FieldHint>{ADMIN_FIELD_HINTS.collection.form}</FieldHint>
           </div>
           <div>
-            <label className="label" htmlFor="colorGroup">Линейка цветов (id)</label>
-            <input id="colorGroup" name="colorGroup" className="field" defaultValue={product?.colorGroup ?? ""} />
+            <label className="label" htmlFor="season">
+              {ADMIN_FIELD_HINTS.season.label}
+            </label>
+            <input
+              id="season"
+              name="season"
+              className="field"
+              defaultValue={product?.season ?? "Зима"}
+            />
+            <FieldHint>{ADMIN_FIELD_HINTS.season.form}</FieldHint>
           </div>
           <div>
-            <label className="label" htmlFor="ozonId">Ozon ID</label>
-            <input id="ozonId" name="ozonId" className="field" inputMode="numeric" defaultValue={product?.ozonId ?? ""} placeholder="2045392461" />
+            <label className="label" htmlFor="country">
+              {ADMIN_FIELD_HINTS.country.label}
+            </label>
+            <input
+              id="country"
+              name="country"
+              className="field"
+              defaultValue={product?.country ?? "Китай"}
+            />
+            <FieldHint>{ADMIN_FIELD_HINTS.country.form}</FieldHint>
+          </div>
+          <div>
+            <label className="label" htmlFor="colorGroup">
+              {ADMIN_FIELD_HINTS.colorGroup.label}
+            </label>
+            <input
+              id="colorGroup"
+              name="colorGroup"
+              className="field"
+              defaultValue={product?.colorGroup ?? ""}
+            />
+            <FieldHint>{ADMIN_FIELD_HINTS.colorGroup.form}</FieldHint>
+          </div>
+          <div className="sm:col-span-2">
+            <label className="label" htmlFor="ozonId">
+              {ADMIN_FIELD_HINTS.ozonId.label}
+            </label>
+            <input
+              id="ozonId"
+              name="ozonId"
+              className="field"
+              inputMode="numeric"
+              defaultValue={product?.ozonId ?? ""}
+              placeholder="2045392461"
+            />
+            <FieldHint>{ADMIN_FIELD_HINTS.ozonId.form}</FieldHint>
           </div>
         </div>
-        <input type="hidden" name="season" defaultValue={product?.season ?? "Зима"} />
-        <input type="hidden" name="country" defaultValue={product?.country ?? "Китай"} />
         <input type="hidden" name="gender" defaultValue={product?.gender ?? "women"} />
         <div>
-          <label className="label" htmlFor="seoTitle">SEO title</label>
-          <input id="seoTitle" name="seoTitle" className="field" defaultValue={product?.seo.title ?? ""} />
+          <label className="label" htmlFor="seoTitle">
+            {ADMIN_FIELD_HINTS.seoTitle.label}
+          </label>
+          <input
+            id="seoTitle"
+            name="seoTitle"
+            className="field"
+            defaultValue={product?.seo.title ?? ""}
+          />
+          <FieldHint>{ADMIN_FIELD_HINTS.seoTitle.form}</FieldHint>
         </div>
         <div>
-          <label className="label" htmlFor="seoDescription">SEO description</label>
-          <textarea id="seoDescription" name="seoDescription" className="field min-h-20" defaultValue={product?.seo.description ?? ""} />
+          <label className="label" htmlFor="seoDescription">
+            {ADMIN_FIELD_HINTS.seoDescription.label}
+          </label>
+          <textarea
+            id="seoDescription"
+            name="seoDescription"
+            className="field min-h-20"
+            defaultValue={product?.seo.description ?? ""}
+          />
+          <FieldHint>{ADMIN_FIELD_HINTS.seoDescription.form}</FieldHint>
         </div>
         {error ? <p className="text-sm text-danger">{error}</p> : null}
         <button type="submit" className="btn" disabled={pending}>
@@ -254,8 +409,9 @@ export function ProductForm({ product }: Props) {
 
       <aside className="space-y-5">
         <div className="border border-line bg-bg-elevated p-4">
-          <p className="label mb-3">Фото этой карточки</p>
-          <p className={`mb-3 text-sm ${photoKind === "ready" ? "text-success" : "text-danger"}`}>
+          <p className="label mb-3">{ADMIN_FIELD_HINTS.photos.label}</p>
+          <FieldHint>{ADMIN_FIELD_HINTS.photos.form}</FieldHint>
+          <p className={`mt-3 text-sm ${photoKind === "ready" ? "text-success" : "text-danger"}`}>
             {photoKind === "ready"
               ? "Свои фото модели"
               : photoKind === "mixed"
@@ -285,20 +441,41 @@ export function ProductForm({ product }: Props) {
           </label>
           <input id="files" name="files" type="file" accept="image/jpeg,image/png,image/webp" multiple className="text-sm" />
           <p className="mt-2 text-xs text-ink-muted">
-            Загрузка заменяет lookbook. До 12 фото, до 8 МБ каждое.
+            Можно несколько файлов сразу, до 12 штук, до 8 МБ каждый. После
+            загрузки нажмите «Сохранить» внизу формы.
           </p>
         </div>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="inStock" defaultChecked={product?.inStock ?? true} />
-          В наличии
+        <label className="flex items-start gap-2 text-sm">
+          <input
+            type="checkbox"
+            name="inStock"
+            className="mt-1"
+            defaultChecked={product?.inStock ?? true}
+          />
+          <span>
+            <span className="font-medium">{ADMIN_FIELD_HINTS.inStock.label}</span>
+            <span className="mt-1 block text-xs text-ink-muted">
+              {ADMIN_FIELD_HINTS.inStock.form}
+            </span>
+          </span>
         </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="isHit" defaultChecked={product?.isHit} />
-          Хит
+        <label className="flex items-start gap-2 text-sm">
+          <input type="checkbox" name="isHit" className="mt-1" defaultChecked={product?.isHit} />
+          <span>
+            <span className="font-medium">{ADMIN_FIELD_HINTS.isHit.label}</span>
+            <span className="mt-1 block text-xs text-ink-muted">
+              {ADMIN_FIELD_HINTS.isHit.form}
+            </span>
+          </span>
         </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="isNew" defaultChecked={product?.isNew} />
-          Новинка
+        <label className="flex items-start gap-2 text-sm">
+          <input type="checkbox" name="isNew" className="mt-1" defaultChecked={product?.isNew} />
+          <span>
+            <span className="font-medium">{ADMIN_FIELD_HINTS.isNew.label}</span>
+            <span className="mt-1 block text-xs text-ink-muted">
+              {ADMIN_FIELD_HINTS.isNew.form}
+            </span>
+          </span>
         </label>
       </aside>
     </form>

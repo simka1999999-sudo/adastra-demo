@@ -44,9 +44,13 @@ export default async function AdminPanelLayout({
   return (
     <div className="container-page py-10 md:py-12">
       <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-frost-deep">
-        Кабинет
+        Кабинет магазина
       </p>
-      <h1 className="display mt-2 text-[clamp(1.8rem,4vw,2.6rem)]">Товары и фото</h1>
+      <h1 className="display mt-2 text-[clamp(1.8rem,4vw,2.6rem)]">Товары</h1>
+      <p className="mt-3 max-w-2xl text-sm text-ink-muted">
+        Сюда заносите каталог. Покупатели эту страницу не видят. Витрина — по
+        ссылке ниже.
+      </p>
       <AdminBar />
       {children}
     </div>

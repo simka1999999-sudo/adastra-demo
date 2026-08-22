@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { withBasePath } from "@/lib/site";
+import { ExcelExportButtons } from "@/components/admin/ExcelExportButtons";
+import { AdminNote } from "@/components/admin/FieldHint";
 
 type Row = {
   row: number;
@@ -25,7 +27,7 @@ type Report = {
 export function ExcelImportForm() {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [dryRun, setDryRun] = useState(false);
+  const [dryRun, setDryRun] = useState(true);
   const [report, setReport] = useState<Report | null>(null);
   const [error, setError] = useState("");
 
@@ -54,16 +56,30 @@ export function ExcelImportForm() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap gap-2">
-        <a href={withBasePath("/api/admin/products/export?template=1")} className="chip">
-          Скачать шаблон
-        </a>
-        <a href={withBasePath("/api/admin/products/export")} className="chip">
-          Скачать текущий каталог
-        </a>
-      </div>
+      <ol className="list-decimal space-y-3 pl-5 text-sm leading-relaxed text-ink-muted">
+        <li>
+          Скачайте текущий каталог — это все товары сайта в одной таблице.
+          Лист «Как заполнять» объясняет каждую колонку.
+        </li>
+        <li>
+          Правите строки в Excel. Шапку колонок не переименовывайте. Новая
+          модель — новая строка с новым артикулом. Уже существующий артикул
+          обновит карточку, а не создаст дубль.
+        </li>
+        <li>
+          Сначала нажмите «Только проверить», посмотрите таблицу ниже. Если всё
+          зелёное — снимите галочку и загрузите на сайт.
+        </li>
+        <li>
+          Фото в Excel не едут. После загрузки — кнопка Ozon ниже или файлы в
+          карточке товара.
+        </li>
+      </ol>
+
+      <ExcelExportButtons />
 
       <form onSubmit={onSubmit} className="space-y-5 border border-line bg-bg-elevated p-5">
+        <p className="font-medium">Загрузить товары из Excel на сайт</p>
         <div>
           <label className="label" htmlFor="file">
             Файл .xlsx
@@ -76,27 +92,41 @@ export function ExcelImportForm() {
             required
             className="text-sm"
           />
+          <p className="mt-1.5 text-xs text-ink-muted">
+            Только формат Excel .xlsx, до 4 МБ. Старый .xls сайт не читает.
+          </p>
         </div>
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-start gap-2 text-sm">
           <input
             type="checkbox"
+            className="mt-1"
             checked={dryRun}
             onChange={(e) => setDryRun(e.target.checked)}
           />
-          Только проверить, не записывать на витрину
+          <span>
+            Только проверить, на сайт пока не писать
+            <span className="mt-1 block text-xs text-ink-muted">
+              Безопасный первый шаг: увидите, какие строки новые, какие обновят
+              уже стоящие товары, где ошибка.
+            </span>
+          </span>
         </label>
         {error ? <p className="text-sm text-danger">{error}</p> : null}
         <button type="submit" className="btn" disabled={pending}>
-          {pending ? "Читаем…" : dryRun ? "Проверить файл" : "Загрузить товары"}
+          {pending
+            ? "Читаем…"
+            : dryRun
+              ? "Проверить файл"
+              : "Загрузить на витрину"}
         </button>
       </form>
 
       {report ? (
         <div>
           <p className="mb-4 text-sm">
-            {report.dryRun ? "Проверка: " : "Готово: "}
-            {report.created} новых · {report.updated} обновлений · {report.failed} ошибок
-            {report.dryRun ? " (на витрину не писали)" : ""}
+            {report.dryRun ? "Проверка, сайт не меняли: " : "Записано на сайт: "}
+            {report.created} новых · {report.updated} обновлений · {report.failed}{" "}
+            ошибок
           </p>
           <div className="overflow-x-auto border border-line">
             <table className="w-full min-w-[520px] text-left text-sm">
@@ -105,7 +135,7 @@ export function ExcelImportForm() {
                   <th className="px-3 py-3">Строка</th>
                   <th className="px-3 py-3">Артикул</th>
                   <th className="px-3 py-3">Название</th>
-                  <th className="px-3 py-3">Статус</th>
+                  <th className="px-3 py-3">Что будет</th>
                 </tr>
               </thead>
               <tbody>
@@ -119,7 +149,9 @@ export function ExcelImportForm() {
                         <span className="text-danger">{row.error}</span>
                       ) : (
                         <span className="text-success">
-                          {row.action === "create" ? "новый" : "обновить"}
+                          {row.action === "create"
+                            ? "новая карточка"
+                            : "обновить существующую"}
                         </span>
                       )}
                     </td>
@@ -130,6 +162,12 @@ export function ExcelImportForm() {
           </div>
         </div>
       ) : null}
+
+      <AdminNote title="Если что-то пошло не так">
+        Сайт не удаляет товары из Excel: исчезнувшая из файла строка на витрине
+        останется. Чтобы снять с продажи — откройте карточку и снимите «В
+        наличии» или удалите товар вручную.
+      </AdminNote>
     </div>
   );
 }

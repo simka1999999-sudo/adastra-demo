@@ -66,21 +66,11 @@ export function OzonPhotosForm({
   if (!configured) {
     return (
       <div className="border border-line bg-ice/40 p-5 text-sm text-ink-muted">
-        <p className="font-medium text-ink">Фото с Ozon</p>
+        <p className="font-medium text-ink">Фото с Ozon пока не подключены</p>
         <p className="mt-2">
-          Чтобы забрать снимки из вашего кабинета продавца, добавьте в{" "}
-          <code className="text-ink">.env</code> ключи{" "}
-          <code className="text-ink">OZON_CLIENT_ID</code> и{" "}
-          <code className="text-ink">OZON_API_KEY</code> из{" "}
-          <a
-            href="https://seller.ozon.ru/app/settings/api-keys"
-            className="underline underline-offset-4"
-            target="_blank"
-            rel="noreferrer"
-          >
-            seller.ozon.ru → API-ключи
-          </a>
-          , затем перезапустите сервер.
+          Это отдельная связка с кабинетом продавца Ozon. Пока загружайте
+          снимки вручную в карточке товара — они сразу появятся у покупателя.
+          Подключение Ozon делает тот, кто ставил сайт.
         </p>
       </div>
     );
@@ -88,20 +78,26 @@ export function OzonPhotosForm({
 
   return (
     <div className="space-y-4 border border-line bg-bg-elevated p-5">
-      <p className="font-medium">Фото с Ozon</p>
+      <p className="font-medium">Подтянуть фото из Ozon</p>
       <p className="text-sm text-ink-muted">
-        Сопоставляем товар по Ozon ID (из Excel или длинного номера в названии)
-        или по артикулу = offer_id в кабинете. Скачиваем фото карточки Ozon на
-        витрину.
+        Сайт находит карточку в вашем кабинете Ozon по номеру товара или по
+        артикулу и копирует её фото сюда. Тексты и цены при этом не меняются.
       </p>
       {!productId ? (
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-start gap-2 text-sm">
           <input
             type="checkbox"
+            className="mt-1"
             checked={onlyMissing}
             onChange={(e) => setOnlyMissing(e.target.checked)}
           />
-          Только там, где ещё нет своих фото
+          <span>
+            Только товары, у которых ещё нет своих фото
+            <span className="mt-1 block text-xs text-ink-muted">
+              Снимите галочку, если нужно заново скачать картинки и заменить
+              текущие.
+            </span>
+          </span>
         </label>
       ) : null}
       {error ? <p className="text-sm text-danger">{error}</p> : null}

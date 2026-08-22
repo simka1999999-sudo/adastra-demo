@@ -7,6 +7,7 @@ import {
   type ProductWrite,
 } from "@/lib/product-write";
 import { parseOzonId } from "@/lib/ozon-id";
+import { ADMIN_FIELD_HINTS } from "@/lib/admin-field-hints";
 
 const CATEGORY_LABEL: Record<Product["category"], string> = {
   overalls: "Комбинезоны",
@@ -222,28 +223,37 @@ async function buildWorkbook(rows: Record<ExcelColumnKey, string | number>[]) {
   }));
   sheet.getRow(1).font = { bold: true };
   sheet.getRow(1).alignment = { wrapText: true, vertical: "middle" };
+  EXCEL_COLUMNS.forEach((col, index) => {
+    const hint = ADMIN_FIELD_HINTS[col.key];
+    if (hint?.excel) {
+      sheet.getRow(1).getCell(index + 1).note = hint.excel;
+    }
+  });
   for (const row of rows) sheet.addRow(row);
 
   const help = wb.addWorksheet("Как заполнять");
   help.columns = [
-    { header: "Поле", key: "field", width: 22 },
-    { header: "Обязательно", key: "need", width: 14 },
-    { header: "Как писать", key: "how", width: 72 },
+    { header: "Колонка в Excel", key: "field", width: 22 },
+    { header: "Нужно заполнить", key: "need", width: 16 },
+    { header: "Куда это идёт на сайте", key: "how", width: 78 },
   ];
   help.getRow(1).font = { bold: true };
   help.addRows([
-    ["Артикул", "да", "Латиница и цифры, без пробелов. По нему обновляется уже существующий товар."],
-    ["Название", "да", "Короткое имя на витрине, например Black Hit."],
-    ["Цвет", "нет", "Если пусто — на сайте будет «уточняется»."],
-    ["Категория", "нет", "Комбинезоны / Куртки / Пальто / Брюки. Пусто = комбинезоны."],
-    ["Цена", "да", "Число в рублях, без «₽»."],
-    ["Старая цена", "нет", "Зачёркнутая цена. Пусто — не показывать."],
-    ["Размеры", "нет", "Через ; например 158 S 44; 164 M 46. Пусто — стандартная сетка."],
-    ["Описание и состав", "нет", "Пустые ячейки заполнятся заглушкой «Уточняется»."],
-    ["В наличии / Хит / Новинка", "нет", "да или нет."],
-    ["Особенности", "нет", "Через ; или с новой строки в ячейке."],
-    ["Ozon ID", "нет", "Номер товара Ozon из ссылки или кабинета. По нему потом тянем фото."],
-    ["Фото", "—", "В Excel не входят. После загрузки нажмите «Подтянуть фото с Ozon»."],
+    ...EXCEL_COLUMNS.map((col) => {
+      const hint = ADMIN_FIELD_HINTS[col.key];
+      return [
+        col.header,
+        hint && "required" in hint && hint.required ? "да" : "нет",
+        hint?.excel || "",
+      ];
+    }),
+    ["Фото", "не в Excel", ADMIN_FIELD_HINTS.photos.excel],
+  ]);
+  help.addRow([]);
+  help.addRow([
+    "Как пользоваться",
+    "",
+    "1) Скачайте файл из админки. 2) Меняйте строки, не переименовывайте шапку. 3) Загрузите файл обратно. 4) Фото — кнопкой Ozon или вручную в карточке.",
   ]);
 
   return wb;

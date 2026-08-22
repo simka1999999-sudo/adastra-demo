@@ -6,16 +6,16 @@ export function AdminBar() {
     <div className="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
       <div className="flex flex-wrap gap-4 text-sm font-medium">
         <Link href="/admin" className="underline-offset-4 hover:underline">
-          Товары
+          Все товары
         </Link>
         <Link href="/admin/products/new" className="underline-offset-4 hover:underline">
-          Новый товар
+          Добавить один товар
         </Link>
         <Link href="/admin/import" className="underline-offset-4 hover:underline">
-          Excel / Ozon
+          Excel: скачать и загрузить
         </Link>
         <Link href="/catalog" className="text-ink-muted underline-offset-4 hover:underline">
-          Витрина
+          Как видят покупатели
         </Link>
       </div>
       <AdminLogoutButton />
