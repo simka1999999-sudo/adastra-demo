@@ -378,7 +378,7 @@ summary::-webkit-details-marker {
 
 .hero-media {
   transform: scale(1.02);
-  transform-origin: center 38%;
+  transform-origin: center center;
 }
 
 .hero-media.kenburns-active {

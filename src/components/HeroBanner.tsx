@@ -7,16 +7,19 @@ import { formatPrice } from "@/lib/products";
 
 const slides = [
   {
-    src: "/lookbook/hero-check.jpg",
-    alt: "Комбинезон ADASTRA Black Hit — чёрный с клеткой",
+    src: "/lookbook/hero-slide-check-crane.jpg",
+    alt: "ADASTRA — клетка и комбинезон с журавлями",
+    focus: "object-[22%_center] md:object-center",
   },
   {
-    src: "/lookbook/hero-leo.jpg",
-    alt: "Комбинезон ADASTRA Leo Hit — чёрный с леопардом",
+    src: "/lookbook/hero-slide-magenta.jpg",
+    alt: "ADASTRA — лыжный комбинезон и подтяжки с логотипом",
+    focus: "object-center",
   },
   {
-    src: "/lookbook/hero-crane.jpg",
-    alt: "Комбинезон ADASTRA Stork — чёрный с журавлями",
+    src: "/lookbook/hero-slide-leo.jpg",
+    alt: "ADASTRA — комбинезон с леопардом",
+    focus: "object-[28%_center] md:object-center",
   },
 ];
 
@@ -39,13 +42,14 @@ export function HeroBanner({ fromPrice }: { fromPrice: number }) {
           alt={i === index ? slide.alt : ""}
           fill
           priority={i === 0}
-          className={`hero-media object-cover object-[center_38%] transition-opacity duration-[1400ms] ease-out ${
-            i === index ? "opacity-80 kenburns-active" : "opacity-0"
+          className={`hero-media object-cover ${slide.focus} transition-opacity duration-[1400ms] ease-out ${
+            i === index ? "opacity-100 kenburns-active" : "opacity-0"
           }`}
           sizes="100vw"
         />
       ))}
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,10,14,0.42)_0%,rgba(8,10,14,0.08)_36%,rgba(8,10,14,0.78)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,10,14,0.62)_0%,rgba(8,10,14,0.22)_42%,rgba(8,10,14,0.08)_70%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,10,14,0.38)_0%,rgba(8,10,14,0.12)_38%,rgba(8,10,14,0.78)_100%)]" />
       <div className="noise" />
       <div className="container-page relative flex min-h-[100svh] flex-col justify-end pb-14 pt-28 sm:pb-20">
         <p className="text-[0.72rem] font-semibold tracking-[0.22em] uppercase text-white/75">
